@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 import re
 
 # plugin constants
-__plugin__ = "plugin.video.la7"
+__plugin__ = "plugin.video.rivedila7"
 __author__ = "Luivit"
 Addon = xbmcaddon.Addon(id=__plugin__)
 handle = int(sys.argv[1])
