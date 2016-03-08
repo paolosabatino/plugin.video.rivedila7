@@ -1,3 +1,4 @@
+- added localized language
 0.0.2 (2016-03-08)
 - bugfix
 - add live streaming

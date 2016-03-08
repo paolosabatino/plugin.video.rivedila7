@@ -11,10 +11,12 @@ import urlparse
 from bs4 import BeautifulSoup
 import re
 
-# plugin constants
-__plugin__ = "plugin.video.rivedila7"
-__author__ = "Luivit"
-Addon = xbmcaddon.Addon(id=__plugin__)
+__addon__ = xbmcaddon.Addon()
+__author__ = __addon__.getAddonInfo('author')
+__scriptid__ = __addon__.getAddonInfo('id')
+__scriptname__ = __addon__.getAddonInfo('name')
+__version__= __addon__.getAddonInfo('version')
+__language__ = __addon__.getLocalizedString
 handle = int(sys.argv[1])
 url_rivedi="http://www.la7.it/rivedila7"
 #url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
@@ -27,9 +29,9 @@ def parameters_string_to_dict(parameters):
     return paramDict
 def show_root_menu():
     ''' Show the plugin root menu '''
-    liStyle = xbmcgui.ListItem("Rivedi La7")
+    liStyle = xbmcgui.ListItem(__language__(32001))
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
-    liStyle = xbmcgui.ListItem("Diretta Live La7")
+    liStyle = xbmcgui.ListItem(__language__(32002))
     addDirectoryItem({"mode": "diretta_live"},liStyle)
     #liStyle = xbmcgui.ListItem("Tutti i programmi")
     #addDirectoryItem({"mode": "tutti_programmi"},liStyle)
@@ -46,13 +48,17 @@ def rivedi_la7():
     html=BeautifulSoup(page)
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
     if giorno is not None:
+        i=0;
         for div in giorno:
-            dateDay=div.find('div',class_='dateDay')
-            dateMonth=div.find('div',class_='dateMonth')
-            dateRowWeek=div.find('div',class_='dateRowWeek')
-            a=div.a.get('href')
-            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
-            addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
+            if(i>0):
+                dateDay=div.find('div',class_='dateDay')
+                dateMonth=div.find('div',class_='dateMonth')
+                dateRowWeek=div.find('div',class_='dateRowWeek')
+                a=div.a.get('href')
+                liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
+                addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
+            else:
+                i=1;
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 def get_video_link(url):
     req = urllib2.Request(url,headers=headers) 
@@ -154,7 +160,7 @@ if mode=="rivedi_la7":
 #    else:
 #        video_programma()
 elif mode=="diretta_live":
-    titolo_global="Diretta Live"
+    titolo_global=__language__(32002)
     thumb_global="http://www.reelseo.com/wp-content/uploads/2014/04/youtube-live.png"
     play_video(url_live)
 else:
