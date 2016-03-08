@@ -1,3 +1,4 @@
+0.0.2 (2016-03-08)
 - bugfix
 - add live streaming
 0.0.1 (2016-03-07)
