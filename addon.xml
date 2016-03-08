@@ -8,16 +8,16 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_gb">The latest 7 days of programming of La7 (italian television)</summary>
-    <description lang="en_gb">The latest 7 days of programming of La7 (italian television)</description>
-	<summary lang="it_it">Ultimi 7 giorni di programmazione di La7</summary>
-    <description lang="it_it">Ultimi 7 giorni di programmazione di La7</description>
+    <summary lang="en_gb">The latest 7 days of programming of La7 and live streaming (italian television)</summary>
+    <description lang="en_gb">The latest 7 days of programming of La7 and live streaming (italian television)</description>
+	<summary lang="it_it">Ultimi 7 giorni di programmazione di La7 e Diretta Tv</summary>
+    <description lang="it_it">Ultimi 7 giorni di programmazione di La7 e Diretta Tv</description>
     <language>it</language>
     <platform>all</platform>
     <license></license>
     <forum></forum>
     <website>http://www.la7.it/rivedila7</website>
     <email>luivit39@gmail.com</email>
-    <source></source>
+    <source>https://github.com/luivit/plugin.video.rivedila7</source>
   </extension>
 </addon>

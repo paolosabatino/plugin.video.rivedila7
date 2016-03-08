@@ -18,6 +18,7 @@ Addon = xbmcaddon.Addon(id=__plugin__)
 handle = int(sys.argv[1])
 url_rivedi="http://www.la7.it/rivedila7"
 #url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
+url_live="http://www.la7.it/dirette-tv"
 url_base="http://www.la7.it"
 headers={'User-Agent': 'Mozilla/5.0'}
 
@@ -28,8 +29,10 @@ def show_root_menu():
     ''' Show the plugin root menu '''
     liStyle = xbmcgui.ListItem("Rivedi La7")
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
-    liStyle = xbmcgui.ListItem("Tutti i programmi")
-    addDirectoryItem({"mode": "tutti_programmi"},liStyle)
+    liStyle = xbmcgui.ListItem("Diretta Live La7")
+    addDirectoryItem({"mode": "diretta_live"},liStyle)
+    #liStyle = xbmcgui.ListItem("Tutti i programmi")
+    #addDirectoryItem({"mode": "tutti_programmi"},liStyle)
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 def addDirectoryItem(parameters, li):
@@ -62,8 +65,8 @@ def play_video(video):
     if "la7.it" in video:
         link_video=get_video_link(video)
     else:
-        link_video=get_video_link(url_base+video)
-    listitem =xbmcgui.ListItem (titolo_global)
+        link_video=get_video_link(url_base+video)       
+    listitem =xbmcgui.ListItem(titolo_global)
     listitem.setInfo('video', {'Title': titolo_global})
     listitem.setArt({ 'thumb': thumb_global})
     xbmc.Player().play(link_video, listitem)
@@ -125,6 +128,7 @@ def video_programma():
             thumb=div.find('div',class_='kaltura-thumb').find('img')['data-src']
             titolo=div.find('div',class_='views-field views-field-title views-field-title-inPropertyPage').a.contents[0]
             log("link %s"% titolo)'''
+    
 params = parameters_string_to_dict(sys.argv[2])
 mode = str(params.get("mode", ""))
 giorno = str(params.get("giorno", ""))
@@ -133,21 +137,25 @@ titolo_global=str(params.get("titolo", ""))
 thumb_global=str(params.get("thumb", ""))
 #lettera_global=str(params.get("lettera", ""))
 #link_global=str(params.get("link", ""))
-#if mode=="rivedi_la7":
-if play=="":
-    if giorno=="":
-        rivedi_la7()
-    else:
-        rivedi_la7_giorno()
-else:
-    play_video(play)
-'''elif mode=="tutti_programmi":
-    if link_global=="":
-        if lettera_global=="":
-            tutti_programmi()
+if mode=="rivedi_la7":
+    if play=="":
+        if giorno=="":
+            rivedi_la7()
         else:
-            programmi_lettera()
+            rivedi_la7_giorno()
     else:
-        video_programma()
+        play_video(play)
+#elif mode=="tutti_programmi":
+#    if link_global=="":
+#        if lettera_global=="":
+#            tutti_programmi()
+#        else:
+#            programmi_lettera()
+#    else:
+#        video_programma()
+elif mode=="diretta_live":
+    titolo_global="Diretta Live"
+    thumb_global="http://www.reelseo.com/wp-content/uploads/2014/04/youtube-live.png"
+    play_video(url_live)
 else:
-    show_root_menu()'''
+    show_root_menu()

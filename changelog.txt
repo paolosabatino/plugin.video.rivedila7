@@ -1,2 +1,4 @@
+- bugfix
+- add live streaming
 0.0.1 (2016-03-07)
 - Initial Release
