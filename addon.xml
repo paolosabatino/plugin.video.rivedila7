@@ -14,8 +14,8 @@
     <description lang="it_it">Ultimi 7 giorni di programmazione di La7 e Diretta Tv</description>
     <language>it</language>
     <platform>all</platform>
-    <license></license>
-    <forum></forum>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+    <forum>http://forum.kodi.tv/showthread.php?tid=155920</forum>
     <website>http://www.la7.it/rivedila7</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
