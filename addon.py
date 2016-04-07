@@ -8,6 +8,7 @@ import xbmcaddon
 import urllib
 import urllib2
 import urlparse
+import html5lib
 from bs4 import BeautifulSoup
 import re
 
@@ -22,7 +23,7 @@ url_rivedi="http://www.la7.it/rivedila7"
 #url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
 url_live="http://www.la7.it/dirette-tv"
 url_base="http://www.la7.it"
-headers={'User-Agent': 'Mozilla/5.0'}
+headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
 
 def parameters_string_to_dict(parameters):
     paramDict = dict(urlparse.parse_qsl(parameters[1:]))
@@ -45,7 +46,7 @@ def addDirectoryItem(parameters, li):
 def rivedi_la7():
     req = urllib2.Request(url_rivedi,headers=headers) 
     page=urllib2.urlopen(req)
-    html=BeautifulSoup(page)
+    html=BeautifulSoup(page,'html5lib')
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
     if giorno is not None:
         i=0;
@@ -79,7 +80,7 @@ def play_video(video):
 def rivedi_la7_giorno():
     req = urllib2.Request(url_base+giorno,headers=headers) 
     page=urllib2.urlopen(req)
-    html=BeautifulSoup(page)
+    html=BeautifulSoup(page,'html5lib')
     guida_tv=html.find(id="content_guida_tv").find_all('div' ,class_='disponibile')
     if guida_tv is not None:
         for div in guida_tv:

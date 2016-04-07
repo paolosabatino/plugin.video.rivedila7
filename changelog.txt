@@ -1,3 +1,4 @@
+- fixed lib on android
 0.0.3 (2016-03-08)
 - added localized language
 0.0.2 (2016-03-08)
