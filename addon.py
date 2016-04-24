@@ -12,12 +12,8 @@ import html5lib
 from bs4 import BeautifulSoup
 import re
 
-__addon__ = xbmcaddon.Addon()
-__author__ = __addon__.getAddonInfo('author')
-__scriptid__ = __addon__.getAddonInfo('id')
-__scriptname__ = __addon__.getAddonInfo('name')
-__version__= __addon__.getAddonInfo('version')
-__language__ = __addon__.getLocalizedString
+addon = xbmcaddon.Addon()
+language = addon.getLocalizedString
 handle = int(sys.argv[1])
 url_rivedi="http://www.la7.it/rivedila7"
 #url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
@@ -30,9 +26,9 @@ def parameters_string_to_dict(parameters):
     return paramDict
 def show_root_menu():
     ''' Show the plugin root menu '''
-    liStyle = xbmcgui.ListItem(__language__(32001))
+    liStyle = xbmcgui.ListItem(language(32001))
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
-    liStyle = xbmcgui.ListItem(__language__(32002))
+    liStyle = xbmcgui.ListItem(language(32002))
     addDirectoryItem({"mode": "diretta_live"},liStyle)
     #liStyle = xbmcgui.ListItem("Tutti i programmi")
     #addDirectoryItem({"mode": "tutti_programmi"},liStyle)
@@ -75,7 +71,8 @@ def play_video(video):
         link_video=get_video_link(url_base+video)       
     listitem =xbmcgui.ListItem(titolo_global)
     listitem.setInfo('video', {'Title': titolo_global})
-    listitem.setArt({ 'thumb': thumb_global})
+    if (thumb_global != ""):
+        listitem.setArt({ 'thumb': thumb_global})
     xbmc.Player().play(link_video, listitem)
 def rivedi_la7_giorno():
     req = urllib2.Request(url_base+giorno,headers=headers) 
@@ -161,8 +158,8 @@ if mode=="rivedi_la7":
 #    else:
 #        video_programma()
 elif mode=="diretta_live":
-    titolo_global=__language__(32002)
-    thumb_global="http://www.reelseo.com/wp-content/uploads/2014/04/youtube-live.png"
+    titolo_global=language(32002)
+    thumb_global=""
     play_video(url_live)
 else:
     show_root_menu()
