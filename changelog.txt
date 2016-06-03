@@ -1,3 +1,4 @@
+0.0.6 (2016-06-03)
 - bugfix to site change
 0.0.5 (2016-04-24)
 - bugfix
