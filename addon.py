@@ -45,17 +45,13 @@ def rivedi_la7():
     html=BeautifulSoup(page,'html5lib')
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
     if giorno is not None:
-        i=0;
-        for div in giorno:
-            if(i>0):
-                dateDay=div.find('div',class_='dateDay')
-                dateMonth=div.find('div',class_='dateMonth')
-                dateRowWeek=div.find('div',class_='dateRowWeek')
-                a=div.a.get('href')
-                liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
-                addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
-            else:
-                i=1;
+        for div in giorno[1:]:
+            dateDay=div.find('div',class_='dateDay')
+            dateMonth=div.find('div',class_='dateMonth')
+            dateRowWeek=div.find('div',class_='dateRowWeek')
+            a=div.a.get('href')
+            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
+            addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 def get_video_link(url,live):
     req = urllib2.Request(url,headers=headers) 
