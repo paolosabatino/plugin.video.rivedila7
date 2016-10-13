@@ -61,6 +61,10 @@ def get_video_link(url,live):
         res=re.findall('mp4" : "(.*?)"', html)
         if res:
             return res[0]
+        else:
+            res=re.findall('mp4: "(.*?)"', html)
+            if res:
+                return res[0]
     else:
         res=re.findall('src: "(.*?)"', html)
         if res:
