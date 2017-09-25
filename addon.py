@@ -32,7 +32,7 @@ def show_root_menu():
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
     liStyle = xbmcgui.ListItem(language(32002))
     addDirectoryItem({"mode": "diretta_live"},liStyle)
-    liStyle = xbmcgui.ListItem("Tutti i programmi")
+    liStyle = xbmcgui.ListItem(language(32006))
     addDirectoryItem({"mode": "tutti_programmi"},liStyle)
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
