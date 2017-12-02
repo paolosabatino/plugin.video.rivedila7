@@ -155,7 +155,7 @@ def programmi_lettera():
 
 def video_programma():  
     if pagenum==0:      
-        req = urllib2.Request(link_global+"/rivedila7",headers=headers) 
+        req = urllib2.Request(link_global+"/rivedila7/archivio",headers=headers) 
         page=urllib2.urlopen(req)
         html=BeautifulSoup(page,'html5lib')
         first=html.find('div',class_='contenitoreUltimaReplicaLa7')
