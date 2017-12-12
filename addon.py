@@ -183,9 +183,6 @@ def video_programma():
         get_rows_video(video)
         liStyle = xbmcgui.ListItem(language(32003))
         addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
-        if pagenum!=0:
-            liStyle = xbmcgui.ListItem(language(32004))
-            addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum-1}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 def get_rows_video(video):
     for div in video:
