@@ -56,20 +56,15 @@ def rivedi_la7():
             addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
-def get_video_link(url,live):
+def get_video_link(url):
     req = urllib2.Request(url,headers=headers) 
     page=urllib2.urlopen(req)
     html=page.read();
-    if live!=True:
-        res=re.findall('mp4" : "(.*?)"', html)
-        if res:
-            return res[0]
-        else:
-            res=re.findall('mp4: "(.*?)"', html)
-            if res:
-                return res[0]
+    res=re.findall('m3u8" : "(.*?)"', html)
+    if res:
+        return res[0]
     else:
-        res=re.findall('src: vS,//"(.*?)"', html)
+        res=re.findall('m3u8: "(.*?)"', html)
         if res:
             return res[0]
 
@@ -91,10 +86,9 @@ def play_video(video,live):
         if html.find("iframe"):
             video=html.find("iframe")['src']
     if not live and  "la7.it" in video:
-        link_video=get_video_link(video,live)
+        link_video=get_video_link(video)
     elif not live:
-        link_video=get_video_link(url_base+video,live)       
-
+        link_video=get_video_link(url_base+video)
     listitem =xbmcgui.ListItem(titolo_global)
     listitem.setInfo('video', {'Title': titolo_global})
     if (thumb_global != ""):
