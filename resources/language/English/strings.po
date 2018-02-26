@@ -25,7 +25,7 @@ msgid "Live Streaming"
 msgstr ""
 
 msgctxt "#32003"
-msgid "next page"
+msgid "Next Page"
 msgstr ""
 
 msgctxt "#32005"
@@ -33,5 +33,5 @@ msgid "Unable to view this program"
 msgstr ""
 
 msgctxt "#32006"
-msgid "All programs"
+msgid "On Demand Programs"
 msgstr ""

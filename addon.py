@@ -16,7 +16,7 @@ addon = xbmcaddon.Addon()
 language = addon.getLocalizedString
 handle = int(sys.argv[1])
 url_rivedi="http://www.la7.it/rivedila7"
-url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
+url_tutti_programmi="http://www.la7.it/programmi"
 url_live="http://www.la7.it/dirette-tv"
 url_base="http://www.la7.it"    
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
@@ -28,10 +28,10 @@ def parameters_string_to_dict(parameters):
 
 def show_root_menu():
     ''' Show the plugin root menu '''
-    liStyle = xbmcgui.ListItem(language(32001))
-    addDirectoryItem({"mode": "rivedi_la7"},liStyle)
     liStyle = xbmcgui.ListItem(language(32002))
     addDirectoryItem({"mode": "diretta_live"},liStyle)
+    liStyle = xbmcgui.ListItem(language(32001))
+    addDirectoryItem({"mode": "rivedi_la7"},liStyle)
     liStyle = xbmcgui.ListItem(language(32006))
     addDirectoryItem({"mode": "tutti_programmi"},liStyle)
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
@@ -77,8 +77,9 @@ def play_video(video,live):
         vS = re.findall('var vS = \'(.*?)\';', html)
         try:
             link_video = vS[0]
-        except:
-            xbmc.log('[RivediLa7] Unable to find video url')
+        except: # catch *all* exceptions
+            e = sys.exc_info()[0]
+            xbmc.log('EXCEP VIDEO: '+str(e),xbmc.LOGNOTICE)
     if not live and "tg.la7.it" in video:
         req = urllib2.Request(video,headers=headers) 
         page=urllib2.urlopen(req)
@@ -115,51 +116,77 @@ def rivedi_la7_giorno():
             xbmcplugin.addDirectoryItem(handle=handle, url=url2,listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
-def tutti_programmi():
-    req = urllib2.Request(url_tutti_programmi,headers=headers) 
-    page=urllib2.urlopen(req)
-    html=BeautifulSoup(page,'html5lib')        
-    lettere=html.find(id='colSx').find('div',class_='view-content').find_all('h3')
-    if lettere is not None:
-        i=0;
-        for h3 in lettere:
-            liStyle = xbmcgui.ListItem(lettere[i].contents[0])
-            addDirectoryItem({"mode": "tutti_programmi","lettera": lettere[i].contents[0]}, liStyle)
-            i=i+1
-        xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+# Raggruppamento Programmi per lettera (A-B-C.....)
+# def tutti_programmi():
+    # req = urllib2.Request(url_tutti_programmi,headers=headers) 
+    # page=urllib2.urlopen(req)
+    # html=BeautifulSoup(page,'html5lib')        
+    # lettere=html.find(id='colSx').find('div',class_='view-content').find_all('h3')
+    # if lettere is not None:
+        # i=0;
+        # for h3 in lettere:
+            # liStyle = xbmcgui.ListItem(lettere[i].contents[0])
+            # addDirectoryItem({"mode": "tutti_programmi","lettera": lettere[i].contents[0]}, liStyle)
+            # i=i+1
+        # xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 def programmi_lettera():
     req = urllib2.Request(url_tutti_programmi,headers=headers) 
     page=urllib2.urlopen(req)
     html=BeautifulSoup(page,'html5lib') 
-    programmi=html.find(id='colSx').find_all('div',class_='itemTuttiProgrammi')
+    programmi=html.find(id='colSx').find_all('div',class_='element_menu')
+    #xbmc.log(str(programmi),xbmc.LOGNOTICE)	
     if programmi is not None:
-        for span in programmi:
-            titolo=span.find('span',class_='field-content').a.contents[0].encode('utf-8')
-            if(titolo[0:1]==lettera_global):
-                liStyle = xbmcgui.ListItem(titolo)
-                link=url_base+span.find('div',class_='wrapperTestualeProgrammi').a.get('href')
-                img=span.find('div',class_='wrapperImgProgrammi').find('div',class_='field-content')
-                if(len(img)>0):
+        for dati in programmi:
+            titolo=dati.find('span',class_='black_overlay').contents[0].encode('utf-8').lstrip()
+            #xbmc.log('TITLE: '+str(titolo),xbmc.LOGNOTICE)	
+            liStyle = xbmcgui.ListItem(titolo)
+            url_trovato=dati.a.get('href')
+            if url_trovato == '/facciaafaccia':
+                url_trovato='/faccia-a-faccia'
+            link=url_base+url_trovato
+            #xbmc.log("LINK1: "+str(link),xbmc.LOGNOTICE)
+            img=dati
+            if(len(img)>0):
+                #xbmc.log('IMG: '+str(img),xbmc.LOGNOTICE)
+                try:
                     thumb=img.find('img')['src']
-                    if thumb is not None:
-                        liStyle.setArt({ 'thumb': thumb})
-                addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
+                except: # catch *all* exceptions
+                    e = sys.exc_info()[0]
+                    xbmc.log('EXCEP THUMB: '+str(e),xbmc.LOGNOTICE)
+                if thumb is not None:
+                    #xbmc.log('THUMB: '+str(thumb),xbmc.LOGNOTICE)
+                    liStyle.setArt({ 'thumb': thumb})
+                else:
+                    xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
+            addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL)   
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 def video_programma():
     req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
-    page=urllib2.urlopen(req)
+    try:
+        page=urllib2.urlopen(req)   
+    except: # catch *all* exceptions
+        e = sys.exc_info()[0]
+        xbmc.log('EXCEP URL: '+str(e),xbmc.LOGNOTICE)
+        return
     html=BeautifulSoup(page,'html5lib')
     if pagenum==0:
-        first=html.find('div',class_='contenitoreUltimaReplicaLa7')
-        if first is None:
+        firstLa7=html.find('div',class_='contenitoreUltimaReplicaLa7')
+        firstLa7d=html.find('div',class_='contenitoreUltimaReplicaLa7d')
+        if firstLa7 is not None:
+            first=firstLa7
+        elif firstLa7d is not None:
+            first=firstLa7d
+        else:    
             if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
                 return
         thumb=first.find('div',class_='kaltura-thumb').find('img')['src']
         titolo=first.find('div',class_='title').text.encode('utf-8')
         plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
         link=url_base+first.find('a',class_='clearfix').get('href')
+        #xbmc.log('LINK2: '+str(link),xbmc.LOGNOTICE)
         liStyle = xbmcgui.ListItem(titolo)
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
@@ -188,6 +215,13 @@ def get_rows_video(video):
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
         addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo,"thumb":thumb,"plot":plot}, liStyle)
+
+        
+        
+        
+        
+        
+# Main             
 params = parameters_string_to_dict(sys.argv[2])
 mode = str(params.get("mode", ""))
 giorno = str(params.get("giorno", ""))
@@ -197,6 +231,8 @@ thumb_global=str(params.get("thumb", ""))
 plot_global=str(params.get("plot", ""))
 lettera_global=str(params.get("lettera", ""))
 link_global=str(params.get("link", ""))
+
+
 if params.get("page", "")=="":
     pagenum=0;
 else:
@@ -212,10 +248,10 @@ if mode=="rivedi_la7":
 elif mode=="tutti_programmi":
     if play=="":
         if link_global=="":
-            if lettera_global=="":
-                tutti_programmi()
-            else:
-                programmi_lettera()
+            # if lettera_global=="":
+                # tutti_programmi()
+            # else:
+            programmi_lettera()
         else:
             video_programma()
     else:
@@ -226,3 +262,8 @@ elif mode=="diretta_live":
     play_video(url_live,True)
 else:
     show_root_menu()
+    
+
+
+
+    
