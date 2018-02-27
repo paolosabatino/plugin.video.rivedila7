@@ -156,7 +156,7 @@ def programmi_lettera():
                     xbmc.log('EXCEP THUMB: '+str(e),xbmc.LOGNOTICE)
                     thumb = None
                 if thumb is not None:
-                    xbmc.log('THUMB: '+str(thumb),xbmc.LOGNOTICE)
+                    #xbmc.log('THUMB: '+str(thumb),xbmc.LOGNOTICE)
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
