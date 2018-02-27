@@ -154,13 +154,14 @@ def programmi_lettera():
                 except: # catch *all* exceptions
                     e = sys.exc_info()[0]
                     xbmc.log('EXCEP THUMB: '+str(e),xbmc.LOGNOTICE)
+                    thumb = None
                 if thumb is not None:
-                    #xbmc.log('THUMB: '+str(thumb),xbmc.LOGNOTICE)
+                    xbmc.log('THUMB: '+str(thumb),xbmc.LOGNOTICE)
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
             addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL)   
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)   
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 def video_programma():

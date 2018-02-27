@@ -1,3 +1,5 @@
+1.1.1 (2018-02-27)
+- bugfix for program without Thumbnail (by testato)
 1.1.0 (2018-02-26)
 - added La7d On Demand Programs (by testato)
 - scrap of new on demand programs index page (by testato)
