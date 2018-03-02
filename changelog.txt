@@ -1,3 +1,6 @@
+- 1.2.0 (2018-02-27)
+- added La7d Replay (by Testato)
+- added display of the seventh day on La7 Replay and La7d Replay (by Testato)
 1.1.1 (2018-02-27)
 - bugfix for program without Thumbnail (by testato)
 1.1.0 (2018-02-26)

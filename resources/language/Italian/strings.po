@@ -20,9 +20,13 @@ msgctxt "#32001"
 msgid "La7 Replay"
 msgstr "Rivedi La7"
 
+msgctxt "#32004"
+msgid "La7d Replay"
+msgstr "Rivedi La7d"
+
 msgctxt "#32002"
-msgid "Live Streaming"
-msgstr "Diretta Live"
+msgid "Live Streaming La7"
+msgstr "Diretta Live La7"
 
 msgctxt "#32003"
 msgid "Next Page"
@@ -33,5 +37,5 @@ msgid "Unable to view this program"
 msgstr "Impossibile visualizzare questo programma"
 
 msgctxt "#32006"
-msgid "On Demand Programs"
-msgstr "Programmi On Demand"
+msgid "On Demand Programs La7-La7d"
+msgstr "Programmi On Demand La7-La7d"

@@ -12,19 +12,23 @@ import requests
 import html5lib
 from bs4 import BeautifulSoup
 
+
 addon = xbmcaddon.Addon()
 language = addon.getLocalizedString
 handle = int(sys.argv[1])
-url_rivedi="http://www.la7.it/rivedila7"
+url_rivedi="http://www.la7.it/rivedila7/0/la7"
+url_rivedila7d="http://www.la7.it/rivedila7/0/la7d"
 url_tutti_programmi="http://www.la7.it/programmi"
 url_live="http://www.la7.it/dirette-tv"
 url_base="http://www.la7.it"    
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
 pagenum=0
 
+
 def parameters_string_to_dict(parameters):
     paramDict = dict(urlparse.parse_qsl(parameters[1:]))
     return paramDict
+
 
 def show_root_menu():
     ''' Show the plugin root menu '''
@@ -32,14 +36,18 @@ def show_root_menu():
     addDirectoryItem({"mode": "diretta_live"},liStyle)
     liStyle = xbmcgui.ListItem(language(32001))
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
+    liStyle = xbmcgui.ListItem(language(32004))
+    addDirectoryItem({"mode": "rivedi_la7d"},liStyle)
     liStyle = xbmcgui.ListItem(language(32006))
     addDirectoryItem({"mode": "tutti_programmi"},liStyle)
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
 
 def addDirectoryItem(parameters, li):
     url = sys.argv[0] + '?' + urllib.urlencode(parameters)
     return xbmcplugin.addDirectoryItem(handle=handle, url=url, 
         listitem=li, isFolder=True)
+
 
 def rivedi_la7():
     req = urllib2.Request(url_rivedi,headers=headers) 
@@ -47,7 +55,7 @@ def rivedi_la7():
     html=BeautifulSoup(page,'html5lib')
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
     if giorno is not None:
-        for div in giorno[1:]:
+        for div in giorno[0:]:
             dateDay=div.find('div',class_='dateDay')
             dateMonth=div.find('div',class_='dateMonth')
             dateRowWeek=div.find('div',class_='dateRowWeek')
@@ -55,6 +63,24 @@ def rivedi_la7():
             liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
             addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
+
+def rivedi_la7d():
+    req = urllib2.Request(url_rivedila7d,headers=headers) 
+    page=urllib2.urlopen(req)
+    html=BeautifulSoup(page,'html5lib')
+    giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
+    
+    if giorno is not None:
+        for div in giorno[0:]:
+            dateDay=div.find('div',class_='dateDay')
+            dateMonth=div.find('div',class_='dateMonth')
+            dateRowWeek=div.find('div',class_='dateRowWeek')
+            a=div.a.get('href')
+            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
+            addDirectoryItem({"mode": "rivedi_la7d","giorno": a}, liStyle)
+        xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
 
 def get_video_link(url):
     req = urllib2.Request(url,headers=headers) 
@@ -67,6 +93,7 @@ def get_video_link(url):
         res=re.findall('m3u8: "(.*?)"', html)
         if res:
             return res[0]
+
 
 def play_video(video,live):
 
@@ -97,6 +124,7 @@ def play_video(video,live):
     listitem.setInfo('video', { 'plot': plot_global })
     xbmc.Player().play(link_video, listitem)
 
+
 def rivedi_la7_giorno():
     req = urllib2.Request(url_base+giorno,headers=headers) 
     page=urllib2.urlopen(req)
@@ -116,6 +144,27 @@ def rivedi_la7_giorno():
             xbmcplugin.addDirectoryItem(handle=handle, url=url2,listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
+
+def rivedi_la7d_giorno():
+    req = urllib2.Request(url_base+giorno,headers=headers) 
+    page=urllib2.urlopen(req)
+    html=BeautifulSoup(page,'html5lib')
+    guida_tv=html.find(id="content_guida_tv").find_all('div' ,class_='disponibile')
+    if guida_tv is not None:
+        for div in guida_tv:
+            nome=div.find('div',class_='titolo clearfix').a.contents[0].encode('utf-8')
+            thumb=div.find('img')['src']
+            plot=div.find('div',class_='descrizione').p.contents[0]
+            urll=div.find('div',class_='titolo').a.get('href')
+            orario=div.find('div',class_='orario').contents[0].encode('utf-8')
+            liStyle = xbmcgui.ListItem(orario+" "+nome)
+            liStyle.setArt({ 'thumb': thumb})
+            liStyle.setInfo('video', { 'plot': plot })
+            url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7d","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
+            xbmcplugin.addDirectoryItem(handle=handle, url=url2,listitem=liStyle, isFolder=False)
+        xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
+        
 # Raggruppamento Programmi per lettera (A-B-C.....)
 # def tutti_programmi():
     # req = urllib2.Request(url_tutti_programmi,headers=headers) 
@@ -129,6 +178,7 @@ def rivedi_la7_giorno():
             # addDirectoryItem({"mode": "tutti_programmi","lettera": lettere[i].contents[0]}, liStyle)
             # i=i+1
         # xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
 
 def programmi_lettera():
     req = urllib2.Request(url_tutti_programmi,headers=headers) 
@@ -161,8 +211,9 @@ def programmi_lettera():
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
             addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)   
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
 
 def video_programma():
     req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
@@ -206,6 +257,8 @@ def video_programma():
         liStyle = xbmcgui.ListItem(language(32003))
         addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
+
 def get_rows_video(video):
     for div in video:
         thumb=div.find('div',class_='kaltura-thumb').find('img')['data-src']            
@@ -230,7 +283,7 @@ play=str(params.get("play", ""))
 titolo_global=str(params.get("titolo", ""))
 thumb_global=str(params.get("thumb", ""))
 plot_global=str(params.get("plot", ""))
-lettera_global=str(params.get("lettera", ""))
+#lettera_global=str(params.get("lettera", ""))
 link_global=str(params.get("link", ""))
 
 
@@ -238,6 +291,7 @@ if params.get("page", "")=="":
     pagenum=0;
 else:
     pagenum=int(params.get("page", ""))
+
 if mode=="rivedi_la7":
     if play=="":
         if giorno=="":
@@ -246,6 +300,16 @@ if mode=="rivedi_la7":
             rivedi_la7_giorno()
     else:
         play_video(play,False)
+
+elif mode=="rivedi_la7d":
+    if play=="":
+        if giorno=="":
+            rivedi_la7d()
+        else:
+            rivedi_la7d_giorno()
+    else:
+        play_video(play,False)
+
 elif mode=="tutti_programmi":
     if play=="":
         if link_global=="":
@@ -257,10 +321,12 @@ elif mode=="tutti_programmi":
             video_programma()
     else:
         play_video(play,False)
+
 elif mode=="diretta_live":
     titolo_global=language(32002)
     thumb_global=""
     play_video(url_live,True)
+
 else:
     show_root_menu()
     
