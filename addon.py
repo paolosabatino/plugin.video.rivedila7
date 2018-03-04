@@ -18,11 +18,13 @@ language = addon.getLocalizedString
 handle = int(sys.argv[1])
 url_rivedi="http://www.la7.it/rivedila7/0/la7"
 url_rivedila7d="http://www.la7.it/rivedila7/0/la7d"
-url_tutti_programmi="http://www.la7.it/programmi"
+url_programmi="http://www.la7.it/programmi"
+url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
 url_live="http://www.la7.it/dirette-tv"
 url_base="http://www.la7.it"    
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
 pagenum=0
+list_programmi=[]
 
 
 def parameters_string_to_dict(parameters):
@@ -45,10 +47,18 @@ def show_root_menu():
 
 def addDirectoryItem(parameters, li):
     url = sys.argv[0] + '?' + urllib.urlencode(parameters)
-    return xbmcplugin.addDirectoryItem(handle=handle, url=url, 
-        listitem=li, isFolder=True)
+    return xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=li, isFolder=True)
 
+    
+def addDirectoryItem_nodup(parameters, li, title):
+    if title in list_programmi:
+        xbmc.log('Prog Duplicato',xbmc.LOGNOTICE)
+    else:
+        url = sys.argv[0] + '?' + urllib.urlencode(parameters)
+        #xbmc.log('LIST: '+str(url),xbmc.LOGNOTICE)
+        return xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=li, isFolder=True)
 
+        
 def rivedi_la7():
     req = urllib2.Request(url_rivedi,headers=headers) 
     page=urllib2.urlopen(req)
@@ -134,14 +144,19 @@ def rivedi_la7_giorno():
         for div in guida_tv:
             nome=div.find('div',class_='titolo clearfix').a.contents[0].encode('utf-8')
             thumb=div.find('img')['src']
-            plot=div.find('div',class_='descrizione').p.contents[0]
+            try:
+                plot=div.find('div',class_='descrizione').p.contents[0]
+            except: # catch *all* exceptions
+                e = sys.exc_info()[0]
+                xbmc.log('EXCEP PLOT_R7: '+str(e),xbmc.LOGNOTICE)
+                plot=""
             urll=div.find('div',class_='titolo').a.get('href')
             orario=div.find('div',class_='orario').contents[0].encode('utf-8')
             liStyle = xbmcgui.ListItem(orario+" "+nome)
             liStyle.setArt({ 'thumb': thumb})
             liStyle.setInfo('video', { 'plot': plot })
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
-            xbmcplugin.addDirectoryItem(handle=handle, url=url2,listitem=liStyle, isFolder=False)
+            xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 
@@ -154,14 +169,19 @@ def rivedi_la7d_giorno():
         for div in guida_tv:
             nome=div.find('div',class_='titolo clearfix').a.contents[0].encode('utf-8')
             thumb=div.find('img')['src']
-            plot=div.find('div',class_='descrizione').p.contents[0]
+            try:
+                plot=div.find('div',class_='descrizione').p.contents[0]
+            except: # catch *all* exceptions
+                e = sys.exc_info()[0]
+                xbmc.log('EXCEP PLOT_R7d: '+str(e),xbmc.LOGNOTICE)
+                plot=""            
             urll=div.find('div',class_='titolo').a.get('href')
             orario=div.find('div',class_='orario').contents[0].encode('utf-8')
             liStyle = xbmcgui.ListItem(orario+" "+nome)
             liStyle.setArt({ 'thumb': thumb})
             liStyle.setInfo('video', { 'plot': plot })
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7d","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
-            xbmcplugin.addDirectoryItem(handle=handle, url=url2,listitem=liStyle, isFolder=False)
+            xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
         
@@ -181,26 +201,29 @@ def rivedi_la7d_giorno():
 
 
 def programmi_lettera():
-    req = urllib2.Request(url_tutti_programmi,headers=headers) 
-    page=urllib2.urlopen(req)
-    html=BeautifulSoup(page,'html5lib') 
-    programmi=html.find(id='colSx').find_all('div',class_='element_menu')
-    #xbmc.log(str(programmi),xbmc.LOGNOTICE)	
-    if programmi is not None:
+    req_p = urllib2.Request(url_programmi,headers=headers) 
+    page_p=urllib2.urlopen(req_p)
+    html_p=BeautifulSoup(page_p,'html5lib') 
+    programmi=html_p.find(id='colSx').find_all('div',class_='element_menu')
+    req_tp = urllib2.Request(url_tutti_programmi,headers=headers) 
+    page_tp=urllib2.urlopen(req_tp)
+    html_tp=BeautifulSoup(page_tp,'html5lib') 
+    tutti_programmi=html_tp.find(id='colSx').find_all('div',class_='itemTuttiProgrammi')    
+
+    if programmi or tutti_programmi is not None:
         for dati in programmi:
-            titolo=dati.find('span',class_='black_overlay').contents[0].encode('utf-8').lstrip()
-            #xbmc.log('TITLE: '+str(titolo),xbmc.LOGNOTICE)	
+            titolo=dati.find('span',class_='black_overlay').contents[0].encode('utf-8').strip()
+            #xbmc.log('TITLE1: '+str(titolo),xbmc.LOGNOTICE)
+            list_programmi.append(titolo)
             liStyle = xbmcgui.ListItem(titolo)
             url_trovato=dati.a.get('href')
             if url_trovato == '/facciaafaccia':
                 url_trovato='/faccia-a-faccia'
             link=url_base+url_trovato
-            #xbmc.log("LINK1: "+str(link),xbmc.LOGNOTICE)
-            img=dati
-            if(len(img)>0):
-                #xbmc.log('IMG: '+str(img),xbmc.LOGNOTICE)
+            if(len(dati)>0):
+                #xbmc.log('IMG: '+str(dati),xbmc.LOGNOTICE)
                 try:
-                    thumb=img.find('img')['src']
+                    thumb=dati.find('img')['src']
                 except: # catch *all* exceptions
                     e = sys.exc_info()[0]
                     xbmc.log('EXCEP THUMB: '+str(e),xbmc.LOGNOTICE)
@@ -211,34 +234,67 @@ def programmi_lettera():
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
             addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
+
+        for dati in tutti_programmi:
+            titolo=dati.find('span',class_='field-content').a.contents[0].encode('utf-8').strip()
+            #xbmc.log('TITLE2: '+str(titolo),xbmc.LOGNOTICE)	
+            liStyle = xbmcgui.ListItem(titolo)
+            url_trovato=dati.find('div',class_='wrapperTestualeProgrammi').a.get('href')
+            link=url_base+url_trovato
+            img=dati.find('div',class_='wrapperImgProgrammi').find('div',class_='field-content')
+            if(len(dati)>0):
+                try:
+                    thumb=dati.find('img')['src']
+                except:
+                    e = sys.exc_info()[0]
+                    xbmc.log('EXCEP THUMB: '+str(e),xbmc.LOGNOTICE)
+                    thumb = None
+                if thumb is not None:
+                    liStyle.setArt({ 'thumb': thumb})
+                else:
+                    xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
+            addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo) 
+            
         xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 
 def video_programma():
-    req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
+    if link_global == 'http://www.la7.it/chi-sceglie-la-seconda-casa':
+        req = urllib2.Request(link_global+"/rivedila7?page="+str(pagenum),headers=headers)
+    else:
+        req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
     try:
         page=urllib2.urlopen(req)   
     except: # catch *all* exceptions
         e = sys.exc_info()[0]
         xbmc.log('EXCEP URL: '+str(e),xbmc.LOGNOTICE)
-        return
+        if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
+            return
     html=BeautifulSoup(page,'html5lib')
     if pagenum==0:
         firstLa7=html.find('div',class_='contenitoreUltimaReplicaLa7')
         firstLa7d=html.find('div',class_='contenitoreUltimaReplicaLa7d')
+        firstLa7old=html.find('div',class_='contenitoreUltimaReplicaNoLuminosa')
         if firstLa7 is not None:
             first=firstLa7
         elif firstLa7d is not None:
             first=firstLa7d
+        elif firstLa7old is not None:
+            first=firstLa7old
         else:    
             if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
                 return
         thumb=first.find('div',class_='kaltura-thumb').find('img')['src']
         titolo=first.find('div',class_='title').text.encode('utf-8')
-        plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
+        try:
+            plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
+        except: # catch *all* exceptions
+            e = sys.exc_info()[0]
+            xbmc.log('EXCEP PLOT1: '+str(e),xbmc.LOGNOTICE)
+            plot=""
         link=url_base+first.find('a',class_='clearfix').get('href')
-        #xbmc.log('LINK2: '+str(link),xbmc.LOGNOTICE)
+        #xbmc.log('LINK: '+str(link),xbmc.LOGNOTICE)
         liStyle = xbmcgui.ListItem(titolo)
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
@@ -333,4 +389,3 @@ else:
 
 
 
-    

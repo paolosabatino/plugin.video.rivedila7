@@ -37,5 +37,5 @@ msgid "Unable to view this program"
 msgstr "Impossibile visualizzare questo programma"
 
 msgctxt "#32006"
-msgid "On Demand Programs La7-La7d"
-msgstr "Programmi On Demand La7-La7d"
+msgid "Programs La7-La7d"
+msgstr "Programmi La7-La7d"
