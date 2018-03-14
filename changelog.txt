@@ -1,4 +1,5 @@
 1.3.0 (2018-03-04) (by Testato)
+- new icon la7-la7d
 - scrap of old on demand programs index page
 - removed duplicated Programs
 - Fix for random missing tag <p> on Replay La7 and Replay La7d 
