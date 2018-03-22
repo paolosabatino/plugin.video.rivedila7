@@ -23,6 +23,7 @@ url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
 url_live="http://www.la7.it/dirette-tv"
 url_base="http://www.la7.it"    
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
+primapagina=True
 pagenum=0
 list_programmi=[]
 
@@ -253,7 +254,16 @@ def programmi_lettera():
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
-            addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo) 
+            addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)
+
+        #Prog aggiunti manualmente
+        titolo='Artedi'	
+        liStyle = xbmcgui.ListItem(titolo)
+        url_trovato='/artedi'
+        link=url_base+url_trovato
+        thumb=url_base+'/sites/default/files/lanci/img/artedi.jpg'
+        liStyle.setArt({ 'thumb': thumb})
+        addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)             
             
         xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
@@ -261,7 +271,9 @@ def programmi_lettera():
 
 def video_programma():
     if link_global == 'http://www.la7.it/chi-sceglie-la-seconda-casa':
-        req = urllib2.Request(link_global+"/rivedila7?page="+str(pagenum),headers=headers)
+        req = urllib2.Request(link_global+"/rivedila7",headers=headers)
+    elif primapagina==True:
+        req = urllib2.Request(link_global+"/rivedila7/archivio",headers=headers)
     else:
         req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
     try:
@@ -301,7 +313,7 @@ def video_programma():
         addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo,"thumb":thumb,"plot":plot}, liStyle)
         ul=html.find('li',class_='switchBtn settimana')
         if ul is not None:
-            req2= urllib2.Request(link_global+"/rivedila7",headers=headers)
+            req2= urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
             page2=urllib2.urlopen(req2)
             html2=BeautifulSoup(page2,'html5lib')
             video2=html2.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
@@ -344,8 +356,10 @@ link_global=str(params.get("link", ""))
 
 
 if params.get("page", "")=="":
+    primapagina=True
     pagenum=0;
 else:
+    primapagina=False
     pagenum=int(params.get("page", ""))
 
 if mode=="rivedi_la7":

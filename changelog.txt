@@ -1,5 +1,9 @@
+1.4.0 (2018-03-22) (by Testato)
+- now the videos in the Week section of all programs are listed 
+  (this also solves the problem that the last episode sometimes did not appear)
+- manually added the Program Artedi
+- new icon La7/La7d
 1.3.0 (2018-03-04) (by Testato)
-- new icon la7-la7d
 - scrap of old on demand programs index page
 - removed duplicated Programs
 - Fix for random missing tag <p> on Replay La7 and Replay La7d 
