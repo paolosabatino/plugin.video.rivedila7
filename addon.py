@@ -35,13 +35,13 @@ def parameters_string_to_dict(parameters):
 
 def show_root_menu():
     ''' Show the plugin root menu '''
-    liStyle = xbmcgui.ListItem(language(32002))
+    liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]')
     addDirectoryItem({"mode": "diretta_live"},liStyle)
-    liStyle = xbmcgui.ListItem(language(32001))
+    liStyle = xbmcgui.ListItem('[B]'+language(32001)+'[/B]')
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
-    liStyle = xbmcgui.ListItem(language(32004))
+    liStyle = xbmcgui.ListItem('[B]'+language(32004)+'[/B]')
     addDirectoryItem({"mode": "rivedi_la7d"},liStyle)
-    liStyle = xbmcgui.ListItem(language(32006))
+    liStyle = xbmcgui.ListItem('[B]'+language(32006)+'[/B]')
     addDirectoryItem({"mode": "tutti_programmi"},liStyle)
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -299,6 +299,7 @@ def video_programma():
                 return
         thumb=first.find('div',class_='kaltura-thumb').find('img')['src']
         titolo=first.find('div',class_='title').text.encode('utf-8')
+        data=' - [I]'+first.find('div',class_='dataPuntata').text.encode('utf-8')+'[/I]'
         try:
             plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
         except: # catch *all* exceptions
@@ -307,10 +308,10 @@ def video_programma():
             plot=""
         link=url_base+first.find('a',class_='clearfix').get('href')
         #xbmc.log('LINK: '+str(link),xbmc.LOGNOTICE)
-        liStyle = xbmcgui.ListItem(titolo)
+        liStyle = xbmcgui.ListItem(titolo+data)
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
-        addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo,"thumb":thumb,"plot":plot}, liStyle)
+        addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
         ul=html.find('li',class_='switchBtn settimana')
         if ul is not None:
             req2= urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
@@ -331,12 +332,13 @@ def get_rows_video(video):
     for div in video:
         thumb=div.find('div',class_='kaltura-thumb').find('img')['data-src']            
         titolo=div.find('div',class_='title').a.text.encode('utf-8')
+        data=' - [I]'+div.find('div',class_='dataPuntata').text.encode('utf-8')+'[/I]'
         plot=div.find('div',class_='views-field-field-testo-lancio').text.encode('utf-8')
         link=url_base+div.find('a',class_='thumbVideo').get('href')
-        liStyle = xbmcgui.ListItem(titolo)
+        liStyle = xbmcgui.ListItem(titolo+data)
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
-        addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo,"thumb":thumb,"plot":plot}, liStyle)
+        addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
 
         
         
