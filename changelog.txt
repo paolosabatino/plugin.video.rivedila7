@@ -7,7 +7,8 @@
 - added program broadcast date for all programs
 
 1.4.0 (2018-03-22) (by Testato)
-- now the videos in the Week section of all programs are listed 
+- now the videos in the Week section of all programs are listed
+  (this also solves the problem that the last episode sometimes did not appear)
 - manually added the Program Artedi
 
 1.3.0 (2018-03-04) (by Testato)
