@@ -270,7 +270,7 @@ def programmi_lettera():
 
 
 def video_programma():
-    if link_global == 'http://www.la7.it/chi-sceglie-la-seconda-casa':
+    if link_global=='http://www.la7.it/chi-sceglie-la-seconda-casa':
         req = urllib2.Request(link_global+"/rivedila7",headers=headers)
     elif primapagina==True:
         req = urllib2.Request(link_global+"/rivedila7/archivio",headers=headers)
@@ -299,7 +299,7 @@ def video_programma():
                 return
         thumb=first.find('div',class_='kaltura-thumb').find('img')['src']
         titolo=first.find('div',class_='title').text.encode('utf-8')
-        data=' - [I]'+first.find('div',class_='dataPuntata').text.encode('utf-8')+'[/I]'
+        data='[I] - ('+first.find('div',class_='dataPuntata').text.encode('utf-8')+')[/I]'
         try:
             plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
         except: # catch *all* exceptions
@@ -313,7 +313,7 @@ def video_programma():
         liStyle.setInfo('video', { 'plot': plot })
         addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
         ul=html.find('li',class_='switchBtn settimana')
-        if ul is not None:
+        if ul is not None and link_global != 'http://www.la7.it/lispettore-barnaby':
             req2= urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
             page2=urllib2.urlopen(req2)
             html2=BeautifulSoup(page2,'html5lib')
@@ -323,8 +323,10 @@ def video_programma():
     video=html.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
     if video is not None:
         get_rows_video(video)
-        liStyle = xbmcgui.ListItem(language(32003))
-        addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
+        pagenext=html.find('li',class_='pager-next')
+        if pagenext is not None:
+            liStyle = xbmcgui.ListItem(language(32003))
+            addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 
@@ -332,7 +334,7 @@ def get_rows_video(video):
     for div in video:
         thumb=div.find('div',class_='kaltura-thumb').find('img')['data-src']            
         titolo=div.find('div',class_='title').a.text.encode('utf-8')
-        data=' - [I]'+div.find('div',class_='dataPuntata').text.encode('utf-8')+'[/I]'
+        data='[I] - ('+div.find('div',class_='dataPuntata').text.encode('utf-8')+')[/I]'
         plot=div.find('div',class_='views-field-field-testo-lancio').text.encode('utf-8')
         link=url_base+div.find('a',class_='thumbVideo').get('href')
         liStyle = xbmcgui.ListItem(titolo+data)
