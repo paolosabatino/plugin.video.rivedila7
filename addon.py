@@ -26,6 +26,8 @@ headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 
 primapagina=True
 pagenum=0
 list_programmi=[]
+thumb_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'resources', 'images')
+fanart_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'fanart.jpg')
 
 
 def parameters_string_to_dict(parameters):
@@ -35,13 +37,17 @@ def parameters_string_to_dict(parameters):
 
 def show_root_menu():
     ''' Show the plugin root menu '''
-    liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]')
+    liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]', iconImage=os.path.join(thumb_path, 'direttalivela7.jpg'))
+    liStyle.setProperty('fanart_image', fanart_path)
     addDirectoryItem({"mode": "diretta_live"},liStyle)
-    liStyle = xbmcgui.ListItem('[B]'+language(32001)+'[/B]')
+    liStyle = xbmcgui.ListItem('[B]'+language(32001)+'[/B]', iconImage=os.path.join(thumb_path, 'rivedila7.jpg'))
+    liStyle.setProperty('fanart_image', fanart_path)
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
-    liStyle = xbmcgui.ListItem('[B]'+language(32004)+'[/B]')
+    liStyle = xbmcgui.ListItem('[B]'+language(32004)+'[/B]', iconImage=os.path.join(thumb_path, 'rivedila7d.jpg'))
+    liStyle.setProperty('fanart_image', fanart_path)
     addDirectoryItem({"mode": "rivedi_la7d"},liStyle)
-    liStyle = xbmcgui.ListItem('[B]'+language(32006)+'[/B]')
+    liStyle = xbmcgui.ListItem('[B]'+language(32006)+'[/B]', iconImage=os.path.join(thumb_path, 'programmila7la7d.jpg'))
+    liStyle.setProperty('fanart_image', fanart_path)
     addDirectoryItem({"mode": "tutti_programmi"},liStyle)
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
