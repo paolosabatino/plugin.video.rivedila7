@@ -71,13 +71,15 @@ def rivedi_la7():
     page=urllib2.urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
+    
     if giorno is not None:
         for div in giorno[0:]:
             dateDay=div.find('div',class_='dateDay')
             dateMonth=div.find('div',class_='dateMonth')
             dateRowWeek=div.find('div',class_='dateRowWeek')
             a=div.a.get('href')
-            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
+            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0], iconImage=os.path.join(thumb_path, 'rivedila7.jpg'))
+            liStyle.setProperty('fanart_image', fanart_path)
             addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -94,7 +96,8 @@ def rivedi_la7d():
             dateMonth=div.find('div',class_='dateMonth')
             dateRowWeek=div.find('div',class_='dateRowWeek')
             a=div.a.get('href')
-            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0])
+            liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0], iconImage=os.path.join(thumb_path, 'rivedila7d.jpg'))
+            liStyle.setProperty('fanart_image', fanart_path)
             addDirectoryItem({"mode": "rivedi_la7d","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -163,6 +166,7 @@ def rivedi_la7_giorno():
             liStyle.setArt({ 'thumb': thumb})
             liStyle.setInfo('video', { 'plot': plot })
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
+            liStyle.setProperty('fanart_image', fanart_path)
             xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -188,6 +192,7 @@ def rivedi_la7d_giorno():
             liStyle.setArt({ 'thumb': thumb})
             liStyle.setInfo('video', { 'plot': plot })
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7d","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
+            liStyle.setProperty('fanart_image', fanart_path)
             xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -240,6 +245,7 @@ def programmi_lettera():
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
+            liStyle.setProperty('fanart_image', fanart_path)
             addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
 
         for dati in tutti_programmi:
@@ -260,6 +266,7 @@ def programmi_lettera():
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB',xbmc.LOGNOTICE)     
+            liStyle.setProperty('fanart_image', fanart_path)
             addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)
 
         #Prog aggiunti manualmente
@@ -269,8 +276,9 @@ def programmi_lettera():
         link=url_base+url_trovato
         thumb=url_base+'/sites/default/files/lanci/img/artedi.jpg'
         liStyle.setArt({ 'thumb': thumb})
-        addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)             
-            
+        liStyle.setProperty('fanart_image', fanart_path)
+        addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)
+
         xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -317,6 +325,7 @@ def video_programma():
         liStyle = xbmcgui.ListItem(titolo+data)
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
+        liStyle.setProperty('fanart_image', fanart_path)
         addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
         ul=html.find('li',class_='switchBtn settimana')
         if ul is not None and link_global != 'http://www.la7.it/lispettore-barnaby':
@@ -331,7 +340,8 @@ def video_programma():
         get_rows_video(video)
         pagenext=html.find('li',class_='pager-next')
         if pagenext is not None:
-            liStyle = xbmcgui.ListItem(language(32003))
+            liStyle = xbmcgui.ListItem('[B]'+language(32003)+'[/B]')
+            liStyle.setProperty('fanart_image', fanart_path)
             addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -346,6 +356,7 @@ def get_rows_video(video):
         liStyle = xbmcgui.ListItem(titolo+data)
         liStyle.setArt({ 'thumb': thumb})
         liStyle.setInfo('video', { 'plot': plot })
+        liStyle.setProperty('fanart_image', fanart_path)
         addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
 
         
