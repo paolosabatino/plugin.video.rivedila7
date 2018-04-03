@@ -276,9 +276,9 @@ def programmi_lettera():
             addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)
 
         #Prog aggiunti manualmente
-        titolo='Artedi'	
+        titolo='Artedi'
         liStyle = xbmcgui.ListItem(titolo)
-        url_trovato='/tgla7'
+        url_trovato='/artedi'
         link=url_base+url_trovato
         thumb=url_base+'/sites/default/files/lanci/img/artedi.jpg'
         liStyle.setArt({ 'thumb': thumb})
