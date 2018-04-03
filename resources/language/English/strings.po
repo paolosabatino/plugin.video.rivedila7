@@ -36,6 +36,10 @@ msgctxt "#32005"
 msgid "Unable to view this program"
 msgstr ""
 
+msgctxt "#32007"
+msgid "News & Weather"
+msgstr ""
+
 msgctxt "#32006"
-msgid "Programs La7-La7d"
+msgid "Programs On-Demand"
 msgstr ""
