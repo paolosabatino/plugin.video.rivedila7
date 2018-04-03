@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rivedila7" name="RivediLa7" version="1.0.0" provider-name="Luivit">
+<addon id="plugin.video.rivedila7" name="RivediLa7" version="1.5.3" provider-name="Luivit">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
-  <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-  <import addon="script.module.requests" version="2.12.4"/>
-	<import addon="script.module.html5lib" version="0.999.0"/>
+    <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+    <import addon="script.module.requests" version="2.12.4"/>
+    <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">The latest 7 days of programming of La7 and live streaming (italian television)</summary>
-    <description lang="en">The latest 7 days of programming of La7 and live streaming (italian television)</description>
-	<summary lang="it">Ultimi 7 giorni di programmazione di La7 e Diretta Tv</summary>
-    <description lang="it">Ultimi 7 giorni di programmazione di La7 e Diretta Tv</description>
+    <summary lang="en">La7-La7d</summary>
+    <description lang="en">The latest 7 days of programming of La7 and La7d, Live Streaming, La7-La7d on demand programs (italian television)</description>
+    <summary lang="it">La7-La7d</summary>
+    <description lang="it">Ultimi 7 giorni di programmazione di La7 e La7d, Diretta Tv e Programmi on demand La7-La7d</description>
     <language>it</language>
     <platform>all</platform>
     <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>

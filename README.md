@@ -1,2 +1,2 @@
-# plugin.video.rivedila7
-The latest 7 days of programming of La7 and live streaming (italian television)
+# La7-La7d Kodi plugin
+The latest 7 days of programming of La7 and La7d, Live Streaming, La7-La7d on demand programs (italian television)
