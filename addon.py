@@ -369,7 +369,7 @@ def video_programma():
             liStyle.setProperty('fanart_image', fanart_path)
             addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
             ul=html.find('li',class_='switchBtn settimana')
-            if ul is not None and link_global != 'http://www.la7.it/lispettore-barnaby':
+            if ul is not None and link_global != 'http://www.la7.it/lispettore-barnaby' and link_global != 'http://www.la7.it/josephineangegardien':
                 req2= urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
                 page2=urllib2.urlopen(req2)
                 html2=BeautifulSoup(page2,'html5lib')
