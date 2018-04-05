@@ -1,3 +1,7 @@
+1.7.0 (2018-04-05) (by Testato)
+- separated the TG La7 Cronache from TG La7
+- removed duplicated episodes on Josephine Ange Gardien
+
 1.6.0 (2018-04-03) (by Testato)
 - new section News & Weather (Tg La7, Tg La7d, Meteo)
 
