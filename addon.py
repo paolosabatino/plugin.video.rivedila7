@@ -132,16 +132,9 @@ def play_video(video,live):
         except: # catch *all* exceptions
             e = sys.exc_info()[0]
             xbmc.log('EXCEP VIDEO: '+str(e),xbmc.LOGNOTICE)
-    if not live and "tg.la7.it" in video:
-        req = urllib2.Request(video,headers=headers) 
-        page=urllib2.urlopen(req)
-        html=BeautifulSoup(page,'html5lib')
-        if html.find("iframe"):
-            video=html.find("iframe")['src']
-    if not live and  "la7.it" in video:
+    else:
         link_video=get_video_link(video)
-    elif not live:
-        link_video=get_video_link(url_base+video)
+      
     listitem =xbmcgui.ListItem(titolo_global)
     listitem.setInfo('video', {'Title': titolo_global})
     if (thumb_global != ""):
@@ -165,7 +158,7 @@ def rivedi_la7_giorno():
                 e = sys.exc_info()[0]
                 xbmc.log('EXCEP PLOT_R7: '+str(e),xbmc.LOGNOTICE)
                 plot=""
-            urll=div.find('div',class_='titolo').a.get('href')
+            urll=url_base+div.find('div',class_='titolo').a.get('href')
             orario=div.find('div',class_='orario').contents[0].encode('utf-8')
             liStyle = xbmcgui.ListItem(orario+" "+nome)
             liStyle.setArt({ 'thumb': thumb})
@@ -191,7 +184,7 @@ def rivedi_la7d_giorno():
                 e = sys.exc_info()[0]
                 xbmc.log('EXCEP PLOT_R7d: '+str(e),xbmc.LOGNOTICE)
                 plot=""            
-            urll=div.find('div',class_='titolo').a.get('href')
+            urll=url_base+div.find('div',class_='titolo').a.get('href')
             orario=div.find('div',class_='orario').contents[0].encode('utf-8')
             liStyle = xbmcgui.ListItem(orario+" "+nome)
             liStyle.setArt({ 'thumb': thumb})

@@ -1,3 +1,6 @@
+1.7.1 (2018-04-05) (by Testato)
+- simplified play_video()
+
 1.7.0 (2018-04-05) (by Testato)
 - separated the TG La7 Cronache from TG La7
 - removed duplicated episodes on Josephine Ange Gardien
