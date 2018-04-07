@@ -28,6 +28,7 @@ primapagina=True
 pagenum=0
 list_programmi=[]
 tg_cronache=False
+link_global=""
 thumb_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'resources', 'images')
 fanart_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'fanart.jpg')
 
