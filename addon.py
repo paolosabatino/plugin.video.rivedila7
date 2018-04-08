@@ -16,19 +16,22 @@ from bs4 import BeautifulSoup
 addon = xbmcaddon.Addon()
 language = addon.getLocalizedString
 handle = int(sys.argv[1])
-url_rivedi="http://www.la7.it/rivedila7/0/la7"
-url_rivedila7d="http://www.la7.it/rivedila7/0/la7d"
-url_programmi="http://www.la7.it/programmi"
-url_tutti_programmi="http://www.la7.it/tutti-i-programmi"
-url_tgla7d="http://tg.la7.it/listing/tgla7d"
-url_live="http://www.la7.it/dirette-tv"
-url_base="http://www.la7.it"    
-headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
-primapagina=True
-pagenum=0
-list_programmi=[]
-tg_cronache=False
-link_global=""
+url_rivedi = "http://www.la7.it/rivedila7/0/la7"
+url_rivedila7d = "http://www.la7.it/rivedila7/0/la7d"
+url_programmi = "http://www.la7.it/programmi"
+url_tutti_programmi = "http://www.la7.it/tutti-i-programmi"
+url_tgla7d = "http://tg.la7.it/listing/tgla7d"
+url_live = "http://www.la7.it/dirette-tv"
+url_base = "http://www.la7.it"    
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'}
+titolo_global = ''
+thumb_global = ''
+plot_global = ''
+link_global = ''
+pagenum = 0
+primapagina = True
+list_programmi = []
+tg_cronache = False
 thumb_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'resources', 'images')
 fanart_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'fanart.jpg')
 
@@ -40,20 +43,20 @@ def parameters_string_to_dict(parameters):
 
 def show_root_menu():
     ''' Show the plugin root menu '''
-    liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]', iconImage=os.path.join(thumb_path, 'direttalivela7.jpg'))
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]')
+    liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'direttalivela7.jpg'), 'fanart' : fanart_path })
     addDirectoryItem({"mode": "diretta_live"},liStyle)
-    liStyle = xbmcgui.ListItem('[B]'+language(32007)+'[/B]', iconImage=os.path.join(thumb_path, 'tgmeteo.jpg'))
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle = xbmcgui.ListItem('[B]'+language(32007)+'[/B]')
+    liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'tgmeteo.jpg'), 'fanart' : fanart_path })
     addDirectoryItem({"mode": "tg_meteo"},liStyle)    
-    liStyle = xbmcgui.ListItem('[B]'+language(32001)+'[/B]', iconImage=os.path.join(thumb_path, 'rivedila7.jpg'))
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle = xbmcgui.ListItem('[B]'+language(32001)+'[/B]')
+    liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'rivedila7.jpg'), 'fanart' : fanart_path })
     addDirectoryItem({"mode": "rivedi_la7"},liStyle)
-    liStyle = xbmcgui.ListItem('[B]'+language(32004)+'[/B]', iconImage=os.path.join(thumb_path, 'rivedila7d.jpg'))
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle = xbmcgui.ListItem('[B]'+language(32004)+'[/B]')
+    liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'rivedila7d.jpg'), 'fanart' : fanart_path })
     addDirectoryItem({"mode": "rivedi_la7d"},liStyle)
-    liStyle = xbmcgui.ListItem('[B]'+language(32006)+'[/B]', iconImage=os.path.join(thumb_path, 'programmila7la7d.jpg'))
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle = xbmcgui.ListItem('[B]'+language(32006)+'[/B]')
+    liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'programmila7la7d.jpg'), 'fanart' : fanart_path })
     addDirectoryItem({"mode": "tutti_programmi"},liStyle)
 
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
@@ -86,7 +89,7 @@ def rivedi_la7():
             dateRowWeek=div.find('div',class_='dateRowWeek')
             a=div.a.get('href')
             liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0], iconImage=os.path.join(thumb_path, 'rivedila7.jpg'))
-            liStyle.setProperty('fanart_image', fanart_path)
+            liStyle.setArt({ 'fanart' : fanart_path })
             addDirectoryItem({"mode": "rivedi_la7","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -104,7 +107,7 @@ def rivedi_la7d():
             dateRowWeek=div.find('div',class_='dateRowWeek')
             a=div.a.get('href')
             liStyle = xbmcgui.ListItem(dateRowWeek.contents[0]+" "+dateDay.contents[0]+" "+dateMonth.contents[0], iconImage=os.path.join(thumb_path, 'rivedila7d.jpg'))
-            liStyle.setProperty('fanart_image', fanart_path)
+            liStyle.setArt({ 'fanart' : fanart_path })
             addDirectoryItem({"mode": "rivedi_la7d","giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -130,7 +133,7 @@ def play_video(video,live):
         vS = re.findall('var vS = \'(.*?)\';', html)
         try:
             link_video = vS[0]
-        except: # catch *all* exceptions
+        except Exception as e:
             e = sys.exc_info()[0]
             xbmc.log('EXCEP VIDEO: '+str(e),xbmc.LOGNOTICE)
     else:
@@ -155,17 +158,16 @@ def rivedi_la7_giorno():
             thumb=div.find('img')['src']
             try:
                 plot=div.find('div',class_='descrizione').p.contents[0]
-            except: # catch *all* exceptions
+            except Exception as e:
                 e = sys.exc_info()[0]
                 xbmc.log('EXCEP PLOT_R7: '+str(e),xbmc.LOGNOTICE)
                 plot=""
             urll=url_base+div.find('div',class_='titolo').a.get('href')
             orario=div.find('div',class_='orario').contents[0].encode('utf-8')
             liStyle = xbmcgui.ListItem(orario+" "+nome)
-            liStyle.setArt({ 'thumb': thumb})
+            liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
             liStyle.setInfo('video', { 'plot': plot })
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
-            liStyle.setProperty('fanart_image', fanart_path)
             xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
@@ -181,34 +183,18 @@ def rivedi_la7d_giorno():
             thumb=div.find('img')['src']
             try:
                 plot=div.find('div',class_='descrizione').p.contents[0]
-            except: # catch *all* exceptions
+            except Exception as e:
                 e = sys.exc_info()[0]
                 xbmc.log('EXCEP PLOT_R7d: '+str(e),xbmc.LOGNOTICE)
                 plot=""            
             urll=url_base+div.find('div',class_='titolo').a.get('href')
             orario=div.find('div',class_='orario').contents[0].encode('utf-8')
             liStyle = xbmcgui.ListItem(orario+" "+nome)
-            liStyle.setArt({ 'thumb': thumb})
+            liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
             liStyle.setInfo('video', { 'plot': plot })
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": "rivedi_la7d","play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
-            liStyle.setProperty('fanart_image', fanart_path)
             xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
-
-
-# Raggruppamento Programmi per lettera (A-B-C.....)
-# def tutti_programmi():
-    # req = urllib2.Request(url_tutti_programmi,headers=headers) 
-    # page=urllib2.urlopen(req)
-    # html=BeautifulSoup(page,'html5lib')        
-    # lettere=html.find(id='colSx').find('div',class_='view-content').find_all('h3')
-    # if lettere is not None:
-        # i=0;
-        # for h3 in lettere:
-            # liStyle = xbmcgui.ListItem(lettere[i].contents[0])
-            # addDirectoryItem({"mode": "tutti_programmi","lettera": lettere[i].contents[0]}, liStyle)
-            # i=i+1
-        # xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 
 def programmi_lettera():
@@ -235,7 +221,7 @@ def programmi_lettera():
                 if(len(dati)>0):
                     try:
                         thumb=dati.find('img')['src']
-                    except: # catch *all* exceptions
+                    except Exception as e:
                         e = sys.exc_info()[0]
                         xbmc.log('EXCEP THUMB1: '+str(e),xbmc.LOGNOTICE)
                         thumb = None
@@ -243,7 +229,7 @@ def programmi_lettera():
                         liStyle.setArt({ 'thumb': thumb})
                     else:
                         xbmc.log('NO THUMB1',xbmc.LOGNOTICE)     
-                liStyle.setProperty('fanart_image', fanart_path)
+                liStyle.setArt({ 'fanart' : fanart_path })
                 addDirectoryItem({"mode": "tutti_programmi","link": link}, liStyle)
 
         for dati in tutti_programmi:
@@ -256,7 +242,7 @@ def programmi_lettera():
             if(len(dati)>0):
                 try:
                     thumb=dati.find('img')['src']
-                except:
+                except Exception as e:
                     e = sys.exc_info()[0]
                     xbmc.log('EXCEP THUMB2: '+str(e),xbmc.LOGNOTICE)
                     thumb = None
@@ -264,7 +250,7 @@ def programmi_lettera():
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB2',xbmc.LOGNOTICE)     
-            liStyle.setProperty('fanart_image', fanart_path)
+            liStyle.setArt({ 'fanart' : fanart_path })
             addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)
 
         #Prog aggiunti manualmente
@@ -273,8 +259,7 @@ def programmi_lettera():
         url_trovato='/artedi'
         link=url_base+url_trovato
         thumb=url_base+'/sites/default/files/lanci/img/artedi.jpg'
-        liStyle.setArt({ 'thumb': thumb})
-        liStyle.setProperty('fanart_image', fanart_path)
+        liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
         addDirectoryItem_nodup({"mode": "tutti_programmi","link": link}, liStyle, titolo)
 
         xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
@@ -288,24 +273,21 @@ def programmi_lettera_tg_meteo():
     url_trovato='/tgla7'
     link=url_base+url_trovato
     thumb=url_base+'/sites/default/files/palinsesto/locandine/palinsesto_tgla7.jpg'
-    liStyle.setArt({ 'thumb': thumb})
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": "tg_meteo","link": link}, liStyle, titolo)
     
     titolo='TG La7 Cronache'
     liStyle = xbmcgui.ListItem(titolo)
     link='flag_tg_cronache'
     thumb='http://kdam.iltrovatore.it/p/103/sp/10300/thumbnail/entry_id/0_6jdqt0jz/version/100000/width/600/name/0_6jdqt0jz.jpg'
-    liStyle.setArt({ 'thumb': thumb})
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": "tg_meteo","link": link}, liStyle, titolo)    
     
     titolo='TG La7d'
     liStyle = xbmcgui.ListItem(titolo)
     link=url_tgla7d
     thumb='http://nkdam.iltrovatore.it/p/110/sp/11000/thumbnail/entry_id/0_wucctmvr/version/100001/width/900/name/0_wucctmvr.jpg'
-    liStyle.setArt({ 'thumb': thumb})
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": "tg_meteo","link": link}, liStyle, titolo)
 
     titolo='Meteo La7'
@@ -313,8 +295,7 @@ def programmi_lettera_tg_meteo():
     url_trovato='/meteola7'
     link=url_base+url_trovato
     thumb=url_base+'/sites/default/files/property/header/home/meteo_header_property_hp_grano.jpg'
-    liStyle.setArt({ 'thumb': thumb})
-    liStyle.setProperty('fanart_image', fanart_path)
+    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": "tg_meteo","link": link}, liStyle, titolo)          
 
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
@@ -337,7 +318,7 @@ def video_programma():
         req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
     try:
         page=urllib2.urlopen(req)
-    except: # catch *all* exceptions
+    except Exception as e:
         e = sys.exc_info()[0]
         xbmc.log('EXCEP URL: '+str(e),xbmc.LOGNOTICE)
         if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
@@ -366,15 +347,14 @@ def video_programma():
                     data='[I] - ('+first.find('div',class_='dataPuntata').text.encode('utf-8')+')[/I]'
                     try:
                         plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
-                    except: # catch *all* exceptions
+                    except Exception as e:
                         e = sys.exc_info()[0]
                         xbmc.log('EXCEP PLOT1: '+str(e),xbmc.LOGNOTICE)
                         plot=""
                     link=url_base+first.find('a',class_='clearfix').get('href')
                     liStyle = xbmcgui.ListItem(titolo+data)
-                    liStyle.setArt({ 'thumb': thumb})
+                    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
                     liStyle.setInfo('video', { 'plot': plot })
-                    liStyle.setProperty('fanart_image', fanart_path)
                     addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
             else:
                 titolo=first.find('div',class_='title').text.encode('utf-8')
@@ -383,15 +363,14 @@ def video_programma():
                     data='[I] - ('+first.find('div',class_='dataPuntata').text.encode('utf-8')+')[/I]'
                     try:
                         plot=first.find('div',class_='views-field-field-testo-lancio').find('p').text.encode('utf-8')
-                    except: # catch *all* exceptions
+                    except Exception as e:
                         e = sys.exc_info()[0]
                         xbmc.log('EXCEP PLOT1: '+str(e),xbmc.LOGNOTICE)
                         plot=""
                     link=url_base+first.find('a',class_='clearfix').get('href')
                     liStyle = xbmcgui.ListItem(titolo+data)
-                    liStyle.setArt({ 'thumb': thumb})
+                    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
                     liStyle.setInfo('video', { 'plot': plot })
-                    liStyle.setProperty('fanart_image', fanart_path)
                     addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
                     
             ul=html.find('li',class_='switchBtn settimana')
@@ -408,7 +387,7 @@ def video_programma():
             pagenext=html.find('li',class_='pager-next')
             if pagenext is not None:
                 liStyle = xbmcgui.ListItem('[B]'+language(32003)+'[/B]')
-                liStyle.setProperty('fanart_image', fanart_path)
+                liStyle.setArt({ 'fanart' : fanart_path })
                 addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
             xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
     #Tg La7d
@@ -419,7 +398,7 @@ def video_programma():
             pagenext=html.find('li',class_='next')
             if pagenext is not None:
                 liStyle = xbmcgui.ListItem('[B]'+language(32003)+'[/B]')
-                liStyle.setProperty('fanart_image', fanart_path)
+                liStyle.setArt({ 'fanart' : fanart_path })
                 addDirectoryItem({"mode": "tutti_programmi","link":link_global,"page":pagenum+1}, liStyle)
             xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
         else:    
@@ -438,9 +417,8 @@ def get_rows_video(video):
                 plot=div.find('div',class_='views-field-field-testo-lancio').text.encode('utf-8')
                 link=url_base+div.find('a',class_='thumbVideo').get('href')
                 liStyle = xbmcgui.ListItem(titolo+data)
-                liStyle.setArt({ 'thumb': thumb})
+                liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
                 liStyle.setInfo('video', { 'plot': plot })
-                liStyle.setProperty('fanart_image', fanart_path)
                 addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
     else:
         for div in video:
@@ -451,9 +429,8 @@ def get_rows_video(video):
                 plot=div.find('div',class_='views-field-field-testo-lancio').text.encode('utf-8')
                 link=url_base+div.find('a',class_='thumbVideo').get('href')
                 liStyle = xbmcgui.ListItem(titolo+data)
-                liStyle.setArt({ 'thumb': thumb})
+                liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
                 liStyle.setInfo('video', { 'plot': plot })
-                liStyle.setProperty('fanart_image', fanart_path)
                 addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle)
 
         
@@ -466,9 +443,8 @@ def get_rows_video_tgla7d(video):
         plot=div.find('div',class_='tgla7-descrizione').text.encode('utf-8').strip()
         link=div.find('div',class_='tgla7-condividi').get('data-share')
         liStyle = xbmcgui.ListItem(titolo)
-        liStyle.setArt({ 'thumb': thumb})
+        liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
         liStyle.setInfo('video', { 'plot': plot })
-        liStyle.setProperty('fanart_image', fanart_path)
         addDirectoryItem({"mode": "tutti_programmi","play": link,"titolo": titolo,"thumb":thumb,"plot":plot}, liStyle)              
         
         
@@ -484,7 +460,6 @@ play=str(params.get("play", ""))
 titolo_global=str(params.get("titolo", ""))
 thumb_global=str(params.get("thumb", ""))
 plot_global=str(params.get("plot", ""))
-#lettera_global=str(params.get("lettera", ""))
 link_global=str(params.get("link", ""))
 
 
@@ -530,9 +505,6 @@ elif mode=="tg_meteo":
 elif mode=="tutti_programmi":
     if play=="":
         if link_global=="":
-            # if lettera_global=="":
-                # tutti_programmi()
-            # else:
             programmi_lettera()
         else:
             video_programma()
