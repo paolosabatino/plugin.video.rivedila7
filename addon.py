@@ -122,7 +122,7 @@ def rivedi(url, thumb):
     html=BeautifulSoup(page,'html5lib')
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
     if giorno is not None:
-        for div in reversed(giorno[0:]):
+        for div in reversed(giorno):
             dateDay=div.find('div',class_='dateDay')
             dateMonth=div.find('div',class_='dateMonth')
             dateRowWeek=div.find('div',class_='dateRowWeek')
