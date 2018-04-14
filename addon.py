@@ -223,48 +223,52 @@ def programmi_lettera():
         programmi = {
             'Artedi': {
                 'url': '/artedi',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/property/header/home/artedi_header_hp_property.jpg',
                 },
             'Bianco e Nero': {
                 'url': '/biancoenero',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/property/header/home/header_home_property_ben.png',
                 },
             'Bellezze in Bicicletta': {
                 'url': '/bellezzeinbicicletta',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/property/header/home/testata-prova.jpg',
                 },
             'Special Guest': {
                 'url': '/specialguest',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/property/header/home/formato%20large_dx.jpg',
                 },
-            'Eccezionale Veramente': {
+            'Eccezionale Veramente 2016': {
                 'url': '/eccezionale-veramente',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/property/header/home/header_property_home_ev.png',
+                },
+            'Eccezionale Veramente 2017': {
+                'url': '/eccezionale-veramente-2017',
+                'img': '/sites/default/files/property/header/home/ev_2017_header_home_property.jpg',
                 },
             "L'ora della salute": {
                 'url': '/lora-della-salute',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/property/header/home/ora_della_salute_header_hp_property_0.png',
                 },
             'Missione Natura': {
                 'url': '/missione-natura',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '/sites/default/files/la7_photogallery/missione-natura_582435.jpg',
                 },
             'Italian Fashion Show': {
                 'url': '/italia-fashion-show',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                'img': '',
                 },
+            'La mala educaxxxion (new page)': {
+                'url': '/la-mala-educaxxxion',
+                'img': '',
+                },                
             'Video non catalogati (Film & Serie)': {
                 'url': '/film',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
-                },                
+                'img': '',
+                },
             'Video non catalogati (Doc & Altro)': {
                 'url': '/non-classificati',
-                'img': '/sites/default/files/lanci/img/artedi.jpg',
-                },                
-            # 'La Mala Educaxxxion': {
-                # 'url': '/la-mala-educaxxxion',
-                # 'img': '/sites/default/files/lanci/img/artedi.jpg',
-                # },
+                'img': '',
+                },
         }
         for programma, program_info in programmi.items():
             titolo = programma
