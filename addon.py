@@ -220,13 +220,60 @@ def programmi_lettera():
             addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)
 
         #Prog aggiunti manualmente
-        titolo='Artedi'
-        liStyle = xbmcgui.ListItem(titolo)
-        url_trovato='/artedi'
-        link=url_base+url_trovato
-        thumb=url_base+'/sites/default/files/lanci/img/artedi.jpg'
-        liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
-        addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)
+        programmi = {
+            'Artedi': {
+                'url': '/artedi',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Bianco e Nero': {
+                'url': '/biancoenero',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Bellezze in Bicicletta': {
+                'url': '/bellezzeinbicicletta',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Special Guest': {
+                'url': '/specialguest',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Eccezionale Veramente': {
+                'url': '/eccezionale-veramente',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            "L'ora della salute": {
+                'url': '/lora-della-salute',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Missione Natura': {
+                'url': '/missione-natura',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Italian Fashion Show': {
+                'url': '/italia-fashion-show',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },
+            'Video non catalogati (Film & Serie)': {
+                'url': '/film',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },                
+            'Video non catalogati (Doc & Altro)': {
+                'url': '/non-classificati',
+                'img': '/sites/default/files/lanci/img/artedi.jpg',
+                },                
+            # 'La Mala Educaxxxion': {
+                # 'url': '/la-mala-educaxxxion',
+                # 'img': '/sites/default/files/lanci/img/artedi.jpg',
+                # },
+        }
+        for programma, program_info in programmi.items():
+            titolo = programma
+            liStyle = xbmcgui.ListItem(titolo)
+            url_trovato = program_info['url']
+            link = url_base + url_trovato
+            thumb = url_base + program_info['img']
+            liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
+            addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)
 
         xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_FOLDERS)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
