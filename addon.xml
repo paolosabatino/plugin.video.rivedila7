@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rivedila7" name="La7-La7d" version="1.7.2" provider-name="Luivit, Testato">
+<addon id="plugin.video.rivedila7" name="La7-La7d" version="1.7.3" provider-name="Luivit, Testato">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-    <import addon="script.module.requests" version="2.12.4"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="addon.py">
@@ -21,7 +20,12 @@
     <website>http://www.la7.it</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
-    <news>1.7.2 (2018-04-18)
+    <news>1.7.3 (2018-04-19)
+- removed "Requests" library
+- play_video() refactoring
+- avoid duplication of episodes when "switchBtn archivio" class is removed from programs page
+
+1.7.2 (2018-04-18)
 - code refactoring
 - video embedded in iframe on Rivedi section is playable
 - programs without episodes do not force on returning to the main menu

@@ -9,7 +9,6 @@ import xbmcaddon
 import urllib
 import urllib2
 import urlparse
-import requests
 import html5lib
 from bs4 import BeautifulSoup
 
@@ -64,8 +63,6 @@ def show_root_menu():
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 
-
-
 def addDirectoryItem_nodup(parameters, li, title=titolo_global, folder=True):
     if title in list_programmi:
         xbmc.log('Prog Duplicato',xbmc.LOGNOTICE)
@@ -78,45 +75,30 @@ def addDirectoryItem_nodup(parameters, li, title=titolo_global, folder=True):
 
 
 def play_video(video,live):
-    #xbmc.log('------LINK2-------: '+str(video),xbmc.LOGNOTICE)
     link_video = ''
+    regex1 = "vS = '(.*?)'"
+    regex2 = 'm3u8" : "(.*?)"'
+    regex3 = 'm3u8: "(.*?)"'
+    regex4 = '  <iframe src="(.*?)"'
+
+    req = urllib2.Request(video,headers=headers)
+    page=urllib2.urlopen(req)
+    html=page.read();
     if live:
-        s = requests.Session()
-        req = s.get(video,headers=headers)
-        html = req.text
-        vS = re.findall('var vS = \'(.*?)\';', html)
-        try:
-            link_video = vS[0]
-        except Exception as e:
-            e = sys.exc_info()[0]
-            xbmc.log('EXCEP VIDEO: '+str(e),xbmc.LOGNOTICE)
-            if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
-                return
+        if re.findall(regex1, html):
+            link_video = re.findall(regex1, html)[0]
     else:
-        req = urllib2.Request(video,headers=headers)
-        page=urllib2.urlopen(req)
-        html=page.read();
-        res=re.findall('m3u8" : "(.*?)"', html)
-        #xbmc.log('------RES1-------: '+str(res),xbmc.LOGNOTICE)
-        if res:
-            link_video = res[0]
-        else:
-            res=re.findall('m3u8: "(.*?)"', html)
-            #xbmc.log('------RES2-------: '+str(res),xbmc.LOGNOTICE)
-            if res:
-                link_video = res[0]
-            else:
-                page=urllib2.urlopen(req)
-                html=BeautifulSoup(page,'html5lib')
-                if html.find("iframe"):
-                    iframe=html.find("iframe")['src']
-                    req = urllib2.Request(iframe,headers=headers)
-                    page=urllib2.urlopen(req)
-                    html=page.read();
-                    res=re.findall('m3u8" : "(.*?)"', html)
-                    #xbmc.log('------RES3-------: '+str(res),xbmc.LOGNOTICE)
-                    if res:
-                        link_video = res[0]
+        if re.findall(regex2, html):
+            link_video = re.findall(regex2, html)[0]
+        elif re.findall(regex3, html):
+            link_video = re.findall(regex3, html)[0]
+        elif re.findall(regex4, html):
+            iframe = re.findall(regex4, html)[0]
+            req2 = urllib2.Request(iframe,headers=headers)
+            page2=urllib2.urlopen(req2)
+            html2=page2.read();
+            if re.findall(regex2, html2):
+                link_video = re.findall(regex2, html2)[0]
 
     listitem =xbmcgui.ListItem(titolo_global)
     listitem.setInfo('video', {'Title': titolo_global})
@@ -130,6 +112,7 @@ def play_video(video,live):
     else:
         listitem.setPath(link_video)
         xbmcplugin.setResolvedUrl(handle, True, listitem)
+
 
 def rivedi(url, thumb):
     req = urllib2.Request(url,headers=headers) 
@@ -217,7 +200,7 @@ def programmi_lettera():
 
         for dati in tutti_programmi:
             titolo=dati.find('span',class_='field-content').a.contents[0].encode('utf-8').strip()
-            #xbmc.log('TITLE2: '+str(titolo),xbmc.LOGNOTICE)	
+            #xbmc.log('TITLE2: '+str(titolo),xbmc.LOGNOTICE)
             liStyle = xbmcgui.ListItem(titolo)
             url_trovato=dati.find('div',class_='wrapperTestualeProgrammi').a.get('href')
             link=url_base+url_trovato
@@ -238,7 +221,7 @@ def programmi_lettera():
 
         #Prog aggiunti manualmente
         programmi = {
-            'Artedi': {
+            'Artedì': {
                 'url': '/artedi',
                 'img': '/sites/default/files/property/header/home/artedi_header_hp_property.jpg',
                 },
@@ -380,26 +363,26 @@ def video_programma():
             else:
                 first_video(first, titolo, titolo.find(filtro_cronache) == -1)
                 
-            ul=html.find('li',class_='switchBtn settimana')
-            if ul is not None and link_global != url_base+'/lispettore-barnaby' and link_global != url_base+'/josephineangegardien':
-                req2= urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
-                page2=urllib2.urlopen(req2)
-                html2=BeautifulSoup(page2,'html5lib')
-                video2=html2.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
-                if video2 is not None:
-                    get_rows_video(video2)
-        video=html.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
-        if video is not None:
-            get_rows_video(video)
+            switchBtn = html.find('li',class_='switchBtn settimana') and html.find('li',class_='switchBtn archivio')
+            if switchBtn is not None:
+                req2 = urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
+                page2 = urllib2.urlopen(req2)
+                html2 = BeautifulSoup(page2,'html5lib')
+                video_settimana = html2.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
+                if video_settimana is not None:
+                    get_rows_video(video_settimana)
+        video_archivio = html.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
+        if video_archivio is not None:
+            get_rows_video(video_archivio)
             page=html.find('li',class_='pager-next')
             pagenext(page)
             xbmcplugin.setContent(handle, 'episodes')
             xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
     #Tg La7d
     else:
-        video=html.find('div',class_='tgla7-category').find_all('article',class_='tgla7-new clearfix')
-        if video is not None:
-            get_rows_video_tgla7d(video)
+        video_tgla7d = html.find('div',class_='tgla7-category').find_all('article',class_='tgla7-new clearfix')
+        if video_tgla7d is not None:
+            get_rows_video_tgla7d(video_tgla7d)
             page=html.find('li',class_='next')
             pagenext(page)
             xbmcplugin.setContent(handle, 'episodes')
