@@ -108,7 +108,7 @@ def play_video(video,live):
     if link_video == '':
         xbmc.log('NO VIDEO LINK',xbmc.LOGNOTICE)
         if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
-            return
+            exit()
     else:
         listitem.setPath(link_video)
         xbmcplugin.setResolvedUrl(handle, True, listitem)
@@ -119,7 +119,7 @@ def rivedi(url, thumb):
     page=urllib2.urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     giorno=html.find(id="giorni").find_all('div' ,class_='giorno')
-    if giorno is not None:
+    if giorno:
         for div in reversed(giorno):
             dateDay=div.find('div',class_='dateDay')
             dateMonth=div.find('div',class_='dateMonth')
@@ -136,7 +136,7 @@ def rivedi_giorno():
     page=urllib2.urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     guida_tv=html.find(id="content_guida_tv").find_all('div' ,class_='disponibile')
-    if guida_tv is not None:
+    if guida_tv:
         for div in guida_tv:
             nome=div.find('div',class_='titolo clearfix').a.contents[0].encode('utf-8')
             thumb=div.find('img')['src']
@@ -159,8 +159,9 @@ def rivedi_giorno():
             liStyle.setProperty('isPlayable', 'true')
             url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": mode,"play": urll,"titolo": nome,"thumb":thumb,"plot":plot.encode('utf-8')})
             xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
-        xbmcplugin.setContent(handle, 'episodes')
-        xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
+    xbmcplugin.setContent(handle, 'episodes')
+    xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
 
 
 def programmi_lettera():
@@ -173,7 +174,7 @@ def programmi_lettera():
     html_tp=BeautifulSoup(page_tp,'html5lib') 
     tutti_programmi=html_tp.find(id='colSx').find_all('div',class_='itemTuttiProgrammi')    
 
-    if programmi or tutti_programmi is not None:
+    if programmi or tutti_programmi:
         for dati in programmi:
             titolo=dati.find('span',class_='black_overlay').contents[0].encode('utf-8').strip()
             #xbmc.log('TITLE1: '+str(titolo),xbmc.LOGNOTICE)
@@ -190,7 +191,7 @@ def programmi_lettera():
                         e = sys.exc_info()[0]
                         xbmc.log('EXCEP THUMB1: '+str(e),xbmc.LOGNOTICE)
                         thumb = None
-                    if thumb is not None:
+                    if thumb:
                         liStyle.setArt({ 'thumb': thumb})
                     else:
                         xbmc.log('NO THUMB1',xbmc.LOGNOTICE)     
@@ -212,7 +213,7 @@ def programmi_lettera():
                     e = sys.exc_info()[0]
                     xbmc.log('EXCEP THUMB2: '+str(e),xbmc.LOGNOTICE)
                     thumb = None
-                if thumb is not None:
+                if thumb:
                     liStyle.setArt({ 'thumb': thumb})
                 else:
                     xbmc.log('NO THUMB2',xbmc.LOGNOTICE)     
@@ -257,7 +258,7 @@ def programmi_lettera():
                 'url': '/italia-fashion-show',
                 'img': '',
                 },
-            'La mala educaxxxion (new page)': {
+            'La mala educaxxxion (La7)': {
                 'url': '/la-mala-educaxxxion',
                 'img': '',
                 },                
@@ -306,7 +307,7 @@ def programmi_lettera_tg_meteo():
     liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)      
 
-    titolo = 'Meteo'
+    titolo = 'Meteo La7'
     liStyle = xbmcgui.ListItem(titolo)
     url_trovato = '/meteola7'
     link = url_base+url_trovato
@@ -315,81 +316,78 @@ def programmi_lettera_tg_meteo():
     addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)          
 
     xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
-        
+
 
 def video_programma():
     global link_global
     global tg_cronache
-    #xbmc.log('LINK: '+str(link_global),xbmc.LOGNOTICE)
-    if link_global=='flag_tg_cronache':
-        tg_cronache=True
-        link_global=url_base+'/tgla7'
-    if link_global==url_base+'/chi-sceglie-la-seconda-casa':
-        req = urllib2.Request(link_global+"/rivedila7",headers=headers)
-    elif link_global==url_tgla7d:
-        req = urllib2.Request(url_tgla7d+"?page="+str(pagenum),headers=headers)
-    elif primapagina==True:
-        req = urllib2.Request(link_global+"/rivedila7/archivio",headers=headers)
-    else:
-        req = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
-    try:
-        page=urllib2.urlopen(req)
-    except Exception as e:
-        e = sys.exc_info()[0]
-        xbmc.log('EXCEP URL: '+str(e),xbmc.LOGNOTICE)
-        if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
-            return
-    html=BeautifulSoup(page,'html5lib')
-
+    if link_global == 'flag_tg_cronache':
+        tg_cronache = True
+        link_global = url_base+'/tgla7'
+    #xbmc.log('-----LINK-----'+str(link_global),xbmc.LOGNOTICE)
+        
     if link_global != url_tgla7d:
-        if pagenum==0:
-            firstLa7=html.find('div',class_='contenitoreUltimaReplicaLa7')
-            firstLa7d=html.find('div',class_='contenitoreUltimaReplicaLa7d')
-            firstLa7old=html.find('div',class_='contenitoreUltimaReplicaNoLuminosa')
-            if firstLa7 is not None:
-                first=firstLa7
-            elif firstLa7d is not None:
-                first=firstLa7d
-            elif firstLa7old is not None:
-                first=firstLa7old
+        req = urllib2.Request(link_global+"/rivedila7",headers=headers)
+        try:
+            page=urllib2.urlopen(req)
+        except Exception as e:
+            e = sys.exc_info()[0]
+            xbmc.log('EXCEP URL: '+str(e),xbmc.LOGNOTICE)
+            if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
+                exit()
+        html=BeautifulSoup(page,'html5lib')
+
+        if pagenum == 0:
+            # Video first
+            if html.find('div',class_='contenitoreUltimaReplicaLa7'):
+                first = html.find('div',class_='contenitoreUltimaReplicaLa7')
+            elif html.find('div',class_='contenitoreUltimaReplicaLa7d'):
+                first = html.find('div',class_='contenitoreUltimaReplicaLa7d')
+            elif html.find('div',class_='contenitoreUltimaReplicaNoLuminosa'):
+                first = html.find('div',class_='contenitoreUltimaReplicaNoLuminosa')
             else:
                 xbmc.log('NO FIRST VIDEO',xbmc.LOGNOTICE)
                 if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
-                    exit()            
-            titolo=first.find('div',class_='title').text.encode('utf-8')
-
+                    exit()
+            titolo = first.find('div',class_='title').text.encode('utf-8')
             if tg_cronache==True:
                 first_video(first, titolo, titolo.find(filtro_cronache) != -1)
             else:
                 first_video(first, titolo, titolo.find(filtro_cronache) == -1)
-                
-            switchBtn = html.find('li',class_='switchBtn settimana') and html.find('li',class_='switchBtn archivio')
-            if switchBtn is not None:
-                req2 = urllib2.Request(link_global+"/rivedila7/settimana",headers=headers)
-                page2 = urllib2.urlopen(req2)
-                html2 = BeautifulSoup(page2,'html5lib')
-                video_settimana = html2.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
-                if video_settimana is not None:
+
+            # Video week
+            if html.find('li',class_='switchBtn settimana'):
+                video_settimana = html.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
+                if video_settimana:
                     get_rows_video(video_settimana)
-        video_archivio = html.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
-        if video_archivio is not None:
-            get_rows_video(video_archivio)
-            page=html.find('li',class_='pager-next')
-            pagenext(page)
-            xbmcplugin.setContent(handle, 'episodes')
-            xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
+        # Video archive
+        if html.find('li',class_='switchBtn archivio'):
+            if link_global == url_base+'/chi-sceglie-la-seconda-casa':
+                req2 = urllib2.Request(link_global+"/rivedila7",headers=headers)
+            else:
+                req2 = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
+            page2 = urllib2.urlopen(req2)
+            html2 = BeautifulSoup(page2,'html5lib')
+            video_archivio = html2.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
+            if video_archivio:
+                get_rows_video(video_archivio)
+                page=html2.find('li',class_='pager-next')
+                pagenext(page)
     #Tg La7d
     else:
+        req = urllib2.Request(url_tgla7d+"?page="+str(pagenum),headers=headers)
+        page = urllib2.urlopen(req)
+        html=BeautifulSoup(page,'html5lib')
         video_tgla7d = html.find('div',class_='tgla7-category').find_all('article',class_='tgla7-new clearfix')
-        if video_tgla7d is not None:
+        if video_tgla7d:
             get_rows_video_tgla7d(video_tgla7d)
             page=html.find('li',class_='next')
             pagenext(page)
-            xbmcplugin.setContent(handle, 'episodes')
-            xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
-        else:    
-            if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
-                return
+            
+    xbmcplugin.setContent(handle, 'episodes')
+    xbmcplugin.endOfDirectory(handle=handle, succeeded=True)
+
 
 
 def first_video(first, titolo, filtro):
@@ -446,7 +444,7 @@ def get_rows_video_tgla7d(video):
 
 
 def pagenext(pagenb):
-            if pagenb is not None:
+            if pagenb:
                 liStyle = xbmcgui.ListItem('[B]'+language(32003)+'[/B]')
                 liStyle.setArt({ 'fanart' : fanart_path })
                 addDirectoryItem_nodup({"mode": mode,"link":link_global,"page":pagenum+1}, liStyle)
