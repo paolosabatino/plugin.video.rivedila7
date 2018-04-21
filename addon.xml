@@ -20,7 +20,13 @@
     <website>http://www.la7.it</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
-    <news>1.7.4 (2018-04-20)
+    <news>1.7.5 (2018-04-21)
+- added some programs thumb
+- removed unused var
+- test on Android 7 passed
+- updated GNU GPL License to last version 3.0
+
+1.7.4 (2018-04-20)
 - video_programma() refactoring
     
 1.7.3 (2018-04-19)

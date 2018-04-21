@@ -29,7 +29,6 @@ thumb_global = ''
 plot_global = ''
 link_global = ''
 pagenum = 0
-primapagina = True
 list_programmi = []
 tg_cronache = False
 filtro_cronache = 'TG LA7 Cronache'
@@ -224,50 +223,50 @@ def programmi_lettera():
         programmi = {
             'Artedì': {
                 'url': '/artedi',
-                'img': '/sites/default/files/property/header/home/artedi_header_hp_property.jpg',
-                },
-            'Bianco e Nero': {
-                'url': '/biancoenero',
-                'img': '/sites/default/files/property/header/home/header_home_property_ben.png',
+                'img': 'http://www.la7.it/sites/default/files/lanci/img/artedi.jpg',
                 },
             'Bellezze in Bicicletta': {
                 'url': '/bellezzeinbicicletta',
-                'img': '/sites/default/files/property/header/home/testata-prova.jpg',
+                'img': 'http://www.la7.it/sites/default/files/property/header/home/testata-prova.jpg',
                 },
-            'Special Guest': {
-                'url': '/specialguest',
-                'img': '/sites/default/files/property/header/home/formato%20large_dx.jpg',
+            'Bianco e Nero': {
+                'url': '/biancoenero',
+                'img': 'http://www.la7.it/sites/default/files/property/header/home/header_home_property_ben.png',
                 },
             'Eccezionale Veramente 2016': {
                 'url': '/eccezionale-veramente',
-                'img': '/sites/default/files/property/header/home/header_property_home_ev.png',
+                'img': 'http://www.la7.it/sites/default/files/property/header/home/header_property_home_ev.png',
                 },
             'Eccezionale Veramente 2017': {
                 'url': '/eccezionale-veramente-2017',
-                'img': '/sites/default/files/property/header/home/ev_2017_header_home_property.jpg',
-                },
-            "L'ora della salute": {
-                'url': '/lora-della-salute',
-                'img': '/sites/default/files/property/header/home/ora_della_salute_header_hp_property_0.png',
-                },
-            'Missione Natura': {
-                'url': '/missione-natura',
-                'img': '/sites/default/files/la7_photogallery/missione-natura_582435.jpg',
+                'img': 'http://www.la7.it/sites/default/files/property/header/home/ev_2017_header_home_property.jpg',
                 },
             'Italian Fashion Show': {
                 'url': '/italia-fashion-show',
-                'img': '',
+                'img': 'http://kdam.iltrovatore.it/p/103/sp/10300/thumbnail/entry_id/0_8j9ei136/version/100000/type/5/width/600/height/360/quality/100/name/0_8j9ei136.jpg'
+                },
+            "L'ora della salute": {
+                'url': '/lora-della-salute',
+                'img': 'http://www.la7.it/sites/default/files/property/header/home/ora_della_salute_header_hp_property_0.png',
                 },
             'La mala educaxxxion (La7)': {
                 'url': '/la-mala-educaxxxion',
-                'img': '',
-                },                
-            'Video non catalogati (Film & Serie)': {
-                'url': '/film',
-                'img': '',
+                'img': 'http://kdam.iltrovatore.it/p/103/sp/10300/thumbnail/entry_id/0_j0z82ps2/version/100001/type/5/width/600/height/360/quality/100/name/0_j0z82ps2.jpg'
                 },
+            'Missione Natura': {
+                'url': '/missione-natura',
+                'img': 'http://kdam.iltrovatore.it/p/103/sp/10300/thumbnail/entry_id/0_qadv09vo/version/100000/type/5/width/600/height/360/quality/100/name/0_qadv09vo.jpg',
+                },                 
+            'Special Guest': {
+                'url': '/specialguest',
+                'img': 'http://www.la7.it/sites/default/files/property/header/home/formato%20large_dx.jpg',
+                },              
             'Video non catalogati (Doc & Altro)': {
                 'url': '/non-classificati',
+                'img': '',
+                },
+            'Video non catalogati (Film & Serie)': {
+                'url': '/film',
                 'img': '',
                 },
         }
@@ -276,7 +275,7 @@ def programmi_lettera():
             liStyle = xbmcgui.ListItem(titolo)
             url_trovato = program_info['url']
             link = url_base + url_trovato
-            thumb = url_base + program_info['img']
+            thumb = program_info['img']
             liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
             addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)
 
@@ -464,10 +463,8 @@ link_global=str(params.get("link", ""))
 
 
 if params.get("page", "")=="":
-    primapagina=True
     pagenum=0;
 else:
-    primapagina=False
     pagenum=int(params.get("page", ""))
 
 if mode=="diretta_live":
