@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rivedila7" name="La7-La7d" version="1.7.5" provider-name="Luivit, Testato">
+<addon id="plugin.video.rivedila7" name="La7-La7d" version="1.7.6" provider-name="Luivit, Testato">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
@@ -20,7 +20,10 @@
     <website>http://www.la7.it</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
-    <news>1.7.5 (2018-04-21)
+    <news>1.7.6 (2018-07-30)
+- added Omnibus News
+    
+1.7.5 (2018-04-21)
 - added some programs thumb
 - removed unused var
 - updated GNU GPL License to last version 3.0

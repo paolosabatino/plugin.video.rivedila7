@@ -32,6 +32,8 @@ pagenum = 0
 list_programmi = []
 tg_cronache = False
 filtro_cronache = 'TG LA7 Cronache'
+omnibus_news = False
+filtro_omnibus = 'Omnibus News'
 thumb_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'resources', 'images')
 fanart_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'fanart.jpg')
 
@@ -304,7 +306,14 @@ def programmi_lettera_tg_meteo():
     link = 'flag_tg_cronache'
     thumb = os.path.join(thumb_path, 'tgcronache.jpg')
     liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
-    addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)      
+    addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo)
+    
+    titolo = 'Omnibus News'
+    liStyle = xbmcgui.ListItem(titolo)
+    link = 'flag_omnibus_news'
+    thumb = os.path.join(thumb_path, 'omnibusnews.jpg')
+    liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
+    addDirectoryItem_nodup({"mode": mode,"link": link}, liStyle, titolo) 
 
     titolo = 'Meteo La7'
     liStyle = xbmcgui.ListItem(titolo)
@@ -320,11 +329,17 @@ def programmi_lettera_tg_meteo():
 def video_programma():
     global link_global
     global tg_cronache
+    global omnibus_news
+
     if link_global == 'flag_tg_cronache':
         tg_cronache = True
         link_global = url_base+'/tgla7'
     #xbmc.log('-----LINK-----'+str(link_global),xbmc.LOGNOTICE)
-        
+    
+    if link_global == 'flag_omnibus_news':
+        omnibus_news = True
+        link_global = url_base+'/omnibus'
+    
     if link_global != url_tgla7d:
         req = urllib2.Request(link_global+"/rivedila7",headers=headers)
         try:
@@ -349,10 +364,13 @@ def video_programma():
                 if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
                     exit()
             titolo = first.find('div',class_='title').text.encode('utf-8')
-            if tg_cronache==True:
-                first_video(first, titolo, titolo.find(filtro_cronache) != -1)
+            
+            if tg_cronache == True:
+                first_video(first, titolo, titolo.find(filtro_cronache) != -1)                
+            elif omnibus_news == True:
+                first_video(first, titolo, titolo.find(filtro_omnibus) != -1)
             else:
-                first_video(first, titolo, titolo.find(filtro_cronache) == -1)
+                first_video(first, titolo, titolo.find(filtro_omnibus) == -1)
 
             # Video week
             if html.find('li',class_='switchBtn settimana'):
@@ -371,8 +389,10 @@ def video_programma():
             video_archivio = html2.find(id='block-la7it-repliche-la7it-repliche-contenuto-tid').find_all('div',class_='views-row')
             if video_archivio:
                 get_rows_video(video_archivio)
-                page=html2.find('li',class_='pager-next')
-                pagenext(page)
+
+                if (link_global != url_base+'/tgla7') and (link_global != url_base+'/omnibus'):
+                    page=html2.find('li',class_='pager-next')
+                    pagenext(page)
     #Tg La7d
     else:
         req = urllib2.Request(url_tgla7d+"?page="+str(pagenum),headers=headers)
@@ -422,10 +442,12 @@ def get_rows_video(video):
     for div in video:
         titolo=div.find('div',class_='title').a.text.encode('utf-8')
         #xbmc.log('TITOLO: '+str(titolo.find(filtro_cronache)),xbmc.LOGNOTICE)
-        if tg_cronache==True:
+        if tg_cronache == True:
             video_list(div, titolo, titolo.find(filtro_cronache) != -1)
+        elif omnibus_news == True:
+            video_list(div, titolo, titolo.find(filtro_omnibus) != -1)
         else:
-            video_list(div, titolo, titolo.find(filtro_cronache) == -1)
+            video_list(div, titolo, titolo.find(filtro_omnibus) == -1)
 
 
 def get_rows_video_tgla7d(video):
