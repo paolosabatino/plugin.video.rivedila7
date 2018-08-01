@@ -370,7 +370,7 @@ def video_programma():
             elif omnibus_news == True:
                 first_video(first, titolo, titolo.find(filtro_omnibus) != -1)
             else:
-                first_video(first, titolo, titolo.find(filtro_omnibus) == -1)
+                first_video(first, titolo, titolo.find(filtro_cronache and filtro_omnibus) == -1)
 
             # Video week
             if html.find('li',class_='switchBtn settimana'):
@@ -447,7 +447,7 @@ def get_rows_video(video):
         elif omnibus_news == True:
             video_list(div, titolo, titolo.find(filtro_omnibus) != -1)
         else:
-            video_list(div, titolo, titolo.find(filtro_omnibus) == -1)
+            video_list(div, titolo, titolo.find(filtro_cronache and filtro_omnibus) == -1)
 
 
 def get_rows_video_tgla7d(video):
