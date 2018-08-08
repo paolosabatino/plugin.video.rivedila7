@@ -20,7 +20,10 @@
     <website>http://www.la7.it</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
-    <news>1.7.6 (2018-08-01)
+    <news>1.7.7 (2018-08-08)
+- added support for adaptive streaming (by sowdust)
+
+1.7.6 (2018-08-01)
 - added Omnibus News
 - filter out Omnibus News and TG Cronache from Program on demand results
     

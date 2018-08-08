@@ -111,6 +111,8 @@ def play_video(video,live):
         if xbmcgui.Dialog().ok(addon.getAddonInfo('name'), language(32005)):
             exit()
     else:
+        listitem.setProperty('inputstreamaddon','inputstream.adaptive')
+        listitem.setProperty('inputstream.adaptive.manifest_type','hls')
         listitem.setPath(link_video)
         xbmcplugin.setResolvedUrl(handle, True, listitem)
 
