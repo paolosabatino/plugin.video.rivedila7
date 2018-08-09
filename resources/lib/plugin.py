@@ -13,6 +13,7 @@ import html5lib
 from bs4 import BeautifulSoup
 
 
+
 addon = xbmcaddon.Addon()
 language = addon.getLocalizedString
 handle = int(sys.argv[1])
