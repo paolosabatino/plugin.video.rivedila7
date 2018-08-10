@@ -18,7 +18,10 @@ def enabled_addon(addon):
 
 def run():
     with enabled_addon("inputstream.adaptive"):
+        xbmc.log('Add-on InputStream Adaptive enabled',xbmc.LOGNOTICE)
         plugin.show_root_menu()
 
 
 run()
+
+

@@ -369,11 +369,16 @@ def video_programma():
             titolo = first.find('div',class_='title').text.encode('utf-8')
             
             if tg_cronache == True:
-                first_video(first, titolo, titolo.find(filtro_cronache) != -1)                
+                first_video(first, titolo, titolo.find(filtro_cronache) != -1)
             elif omnibus_news == True:
                 first_video(first, titolo, titolo.find(filtro_omnibus) != -1)
+            elif link_global == url_base+'/tgla7':
+                first_video(first, titolo, titolo.find(filtro_cronache) == -1)
+            elif link_global == url_base+'/omnibus':
+                first_video(first, titolo, titolo.find(filtro_omnibus) == -1)
             else:
-                first_video(first, titolo, titolo.find(filtro_cronache and filtro_omnibus) == -1)
+                first_video(first, titolo, True)
+
 
             # Video week
             if html.find('li',class_='switchBtn settimana'):
@@ -449,8 +454,12 @@ def get_rows_video(video):
             video_list(div, titolo, titolo.find(filtro_cronache) != -1)
         elif omnibus_news == True:
             video_list(div, titolo, titolo.find(filtro_omnibus) != -1)
+        elif link_global == url_base+'/tgla7':
+            video_list(div, titolo, titolo.find(filtro_cronache) == -1)
+        elif link_global == url_base+'/omnibus':
+            video_list(div, titolo, titolo.find(filtro_omnibus) == -1)
         else:
-            video_list(div, titolo, titolo.find(filtro_cronache and filtro_omnibus) == -1)
+            video_list(div, titolo, True)
 
 
 def get_rows_video_tgla7d(video):
