@@ -47,6 +47,7 @@ def parameters_string_to_dict(parameters):
 def show_root_menu():
     ''' Show the plugin root menu '''
     liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]')
+    liStyle.setInfo('video', {})
     liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'direttalivela7.jpg'), 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": "diretta_live"},liStyle, folder=False)
     liStyle = xbmcgui.ListItem('[B]'+language(32007)+'[/B]')

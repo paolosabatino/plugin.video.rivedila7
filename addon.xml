@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rivedila7" name="La7-La7d" version="1.8.0" provider-name="Luivit, Testato">
+<addon id="plugin.video.rivedila7" name="La7-La7d" version="2.0.0" provider-name="Luivit, Testato">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
+    <import addon="inputstream.adaptive"/>
     <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     <import addon="script.module.html5lib" version="0.999.0"/>
   </requires>
@@ -20,7 +21,12 @@
     <website>http://www.la7.it</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
-    <news>1.8.0 (2018-08-10)
+    <news>2.0.0 (2019-02-01)
+- fixed Live stream on Kodi18
+- added InputStream Adaptive in the required add-on
+- improved logfile about InputStream management
+
+1.8.0 (2018-08-10)
 - automatic activation of add-on InputStream Adaptive
 - removed the filtering of episodes where not necessary
 
