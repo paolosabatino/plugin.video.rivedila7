@@ -47,7 +47,6 @@ def parameters_string_to_dict(parameters):
 def show_root_menu():
     ''' Show the plugin root menu '''
     liStyle = xbmcgui.ListItem('[B]'+language(32002)+'[/B]')
-    liStyle.setInfo('video', {})
     liStyle.setArt({ 'thumb': os.path.join(thumb_path, 'direttalivela7.jpg'), 'fanart' : fanart_path })
     addDirectoryItem_nodup({"mode": "diretta_live"},liStyle, folder=False)
     liStyle = xbmcgui.ListItem('[B]'+language(32007)+'[/B]')
@@ -73,6 +72,7 @@ def addDirectoryItem_nodup(parameters, li, title=titolo_global, folder=True):
         url = sys.argv[0] + '?' + urllib.urlencode(parameters)
         #xbmc.log('LIST: '+str(url),xbmc.LOGNOTICE)
         if not folder:
+            li.setInfo('video', {})
             li.setProperty('isPlayable', 'true')
         return xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=li, isFolder=folder)
 
