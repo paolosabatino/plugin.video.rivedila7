@@ -27,6 +27,7 @@
 - improved logfile about InputStream management
 - fixed TG La7 on Rivedi La7
 - removed TG Cronache
+- fixed TG La7d randomly without plot
 
 1.8.0 (2018-08-10)
 - automatic activation of add-on InputStream Adaptive
