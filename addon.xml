@@ -21,10 +21,12 @@
     <website>http://www.la7.it</website>
     <email>luivit39@gmail.com</email>
     <source>https://github.com/luivit/plugin.video.rivedila7</source>
-    <news>2.0.0 (2019-02-01)
+    <news>2.0.0 (2019-02-17)
 - fixed Live stream on Kodi18
 - added InputStream Adaptive in the required add-on
 - improved logfile about InputStream management
+- fixed TG La7 on Rivedi La7
+- removed TG Cronache
 
 1.8.0 (2018-08-10)
 - automatic activation of add-on InputStream Adaptive
