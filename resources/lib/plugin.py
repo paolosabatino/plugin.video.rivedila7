@@ -90,6 +90,8 @@ def play_video(video,live):
     if live:
         if re.findall(regex1, html):
             link_video = re.findall(regex1, html)[0]
+            if link_video.startswith('//'):
+                link_video = 'https:' + link_video
     else:
         if re.findall(regex2, html):
             link_video = re.findall(regex2, html)[0]
