@@ -43,3 +43,7 @@ msgstr "Telegiornali & Meteo"
 msgctxt "#32006"
 msgid "Programs On-Demand"
 msgstr "Programmi On-Demand"
+
+msgctxt "#32008"
+msgid "Teche La7 - The Protagonists"
+msgstr "Teche La7 - I Protagonisti"

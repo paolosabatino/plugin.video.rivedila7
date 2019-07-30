@@ -43,3 +43,7 @@ msgstr ""
 msgctxt "#32006"
 msgid "Programs On-Demand"
 msgstr ""
+
+msgctxt "#32008"
+msgid "Teche La7 - The Protagonists"
+msgstr ""

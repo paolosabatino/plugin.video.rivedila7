@@ -3,6 +3,11 @@ Live Streaming La7, News and Weather, Replay the last week, Programs on-demand (
 
 
 ### Changelog
+3.0.0 (2019-07-30)
+- restored all the functions due to restyling of the La7 site
+- added new section Teche La7-The Protagonists
+- in the OnDemand section added the scraping of a third page of TV program lists (Programmi - Tutti i programmi - Programmi La7d)
+- added the possibility of doing scraping of the Landpage of the TV programs instead of the page /rivedila7, because for some programs the page /rivedila7 is no longer updated. Function currently active on Atlantide only
 
 2.0.1 (2019-07-10) (by sowdust)
 - fixed diretta-live streaming url
