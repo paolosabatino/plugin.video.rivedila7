@@ -19,7 +19,7 @@ language = addon.getLocalizedString
 handle = int(sys.argv[1])
 url_base = "https://www.la7.it"
 url_live = "https://www.la7.it/dirette-tv"
-url_tgla7d = "http://tg.la7.it/listing/tgla7d" 
+url_tgla7d = "https://tg.la7.it/listing/tgla7d"
 url_rivedila7 = "https://www.la7.it/rivedila7/0/la7"
 url_rivedila7d = "https://www.la7.it/rivedila7/0/la7d"
 url_programmi = "https://www.la7.it/programmi"
@@ -86,7 +86,7 @@ def addDirectoryItem_nodup(parameters, li, title=titolo_global, folder=True):
 def play_video(video,live):
     link_video = ''
     regex1 = 'vS = "(.*?)"'
-    regex2 = 'm3u8" : "(.*?)"'
+    regex2 = '/content/(.*?).mp4'
     regex3 = 'm3u8: "(.*?)"'
     regex4 = '  <iframe src="(.*?)"'
 
@@ -95,20 +95,25 @@ def play_video(video,live):
     html=page.read()
     if live:
         if re.findall(regex1, html):
-            #xbmc.log('LIVE----------: '+str(re.findall(regex1, html)),xbmc.LOGNOTICE)
+            #xbmc.log('REGEX1-----: '+str(re.findall(regex1, html)),xbmc.LOGNOTICE)
             link_video = re.findall(regex1, html)[0]
     else:
         if re.findall(regex2, html):
-            link_video = re.findall(regex2, html)[0]
+            #xbmc.log('REGEX2-----: '+str(re.findall(regex2, html)),xbmc.LOGNOTICE)
+            link_video = 'https://awsvodpkg.iltrovatore.it/local/hls/,/content/'+re.findall(regex2, html)[0]+'.mp4.urlset/master.m3u8'
+            #xbmc.log('LINK2-----: '+str(link_video),xbmc.LOGNOTICE)
         elif re.findall(regex3, html):
+            #xbmc.log('REGEX3-----: '+str(re.findall(regex3, html)),xbmc.LOGNOTICE)
             link_video = re.findall(regex3, html)[0]
         elif re.findall(regex4, html):
+            #xbmc.log('REGEX4-----: '+str(re.findall(regex4, html)),xbmc.LOGNOTICE)
             iframe = re.findall(regex4, html)[0]
             req2 = urllib2.Request(iframe,headers=headers)
             page2=urllib2.urlopen(req2)
             html2=page2.read()
             if re.findall(regex2, html2):
-                link_video = str("http:")+re.findall(regex2, html2)[0]
+                #xbmc.log('REGEX2-B---: '+str(re.findall(regex2, html)),xbmc.LOGNOTICE)
+                link_video = str("https:")+re.findall(regex2, html2)[0]
 
     listitem =xbmcgui.ListItem(titolo_global)
     listitem.setInfo('video', {'Title': titolo_global})
@@ -153,7 +158,7 @@ def rivedi_giorno():
         for div in guida_tv:
             orario=div.find('div',class_='orario').contents[0].encode('utf-8').strip()
             nome=div.find('div',class_='property').text.encode('utf-8').strip()
-            thumb='http:'+div.find('div',class_='bg-img lozad').get('data-background-image')
+            thumb='https:'+div.find('div',class_='bg-img lozad').get('data-background-image')
             plot=div.find('div',class_='occhiello').text.encode('utf-8').strip()
             if div.a:
                 urll = div.a.get('href').strip()
@@ -269,7 +274,7 @@ def programmi_lettera():
         programmi = {
             'LA MALA EDUCAXXXION 2': {
                 'url': '/la-mala-educaxxxion',
-                'img': 'http://kdam.iltrovatore.it/p/103/sp/10300/thumbnail/entry_id/0_j0z82ps2/version/100001/type/5/width/600/height/360/quality/100/name/0_j0z82ps2.jpg'
+                'img': 'https://kdam.iltrovatore.it/p/103/sp/10300/thumbnail/entry_id/0_j0z82ps2/version/100001/type/5/width/600/height/360/quality/100/name/0_j0z82ps2.jpg'
                 },           
             'Ω Video non catalogati 1': {
                 'url': '/non-classificati',
@@ -311,7 +316,7 @@ def programmi_lettera_teche_la7():
                 #xbmc.log('LINK-----: '+str(link),xbmc.LOGNOTICE)
                 if(len(dati)>0):
                     try:
-                        thumb='http:'+dati.find('div',class_='image-bg lozad').get('data-background-image')
+                        thumb='https:'+dati.find('div',class_='image-bg lozad').get('data-background-image')
                     except Exception as e:
                         e = sys.exc_info()[0]
                         xbmc.log('EXCEP THUMB4: '+str(e),xbmc.LOGNOTICE)
@@ -489,7 +494,7 @@ def video_programma_teche_la7():
 
 def first_video(first, titolo, filtro):
     if filtro:
-        thumb='http:'+first.find('div',class_='holder-bg lozad').get('data-background-image')
+        thumb='https:'+first.find('div',class_='holder-bg lozad').get('data-background-image')
         data='[I] - ('+first.find('div',class_='scritta_ultima').text.encode('utf-8').strip()+')[/I]'
         try:
             plot=first.find('div',class_='occhiello').text.encode('utf-8').strip()
@@ -506,7 +511,7 @@ def first_video(first, titolo, filtro):
 
 def video_list(div, titolo, filtro):
     if filtro:
-        thumb='http:'+div.find('div',class_='bg-img lozad').get('data-background-image')
+        thumb='https:'+div.find('div',class_='bg-img lozad').get('data-background-image')
         #subdata=div.find('a').get('href').encode('utf-8')
         #data='[I] - ('+subdata[24:34]+')[/I]'
         try:
@@ -544,7 +549,6 @@ def get_rows_video_tgla7d(video):
         titolo=div.find('div',class_='tgla7-condividi').get('data-title').encode('utf-8').strip()
         thumb_link=div.find('div',class_='tgla7-img').get('style')
         thumb = thumb_link[22:-1]
-        #xbmc.log('THUMB: '+str(thumb),xbmc.LOGNOTICE)
         try:
             plot=div.find('div',class_='tgla7-descrizione').text.encode('utf-8').strip()
         except Exception as e:
@@ -568,7 +572,7 @@ def get_rows_video_techela7_preview(video):
     #xbmc.log('DATA-----: '+str(data),xbmc.LOGNOTICE)
     if re.findall(regex5, html):
         #xbmc.log('REGEX----------: '+str(re.findall(regex5, html)),xbmc.LOGNOTICE)
-        thumb = 'http:'+re.findall(regex5, html)[0]
+        thumb = 'https:'+re.findall(regex5, html)[0]
     else:
         thumb=''
     plot=video.find('div',class_='description').text.encode('utf-8').strip()
@@ -584,7 +588,7 @@ def get_rows_video_techela7(video):
         titolo=div.find('div',class_='title').text.encode('utf-8').strip()
         data='[I] - ('+div.find('div',class_='data').text.encode('utf-8').strip()+')[/I]'
         #xbmc.log('DATA-----: '+str(data),xbmc.LOGNOTICE)
-        thumb='http:'+div.find('div',class_='bg-img lozad').get('data-background-image')
+        thumb='https:'+div.find('div',class_='bg-img lozad').get('data-background-image')
         plot=""
         link=url_base+div.a.get('href').strip()
         liStyle = xbmcgui.ListItem(titolo+data)
@@ -625,7 +629,7 @@ def get_rows_video_landpage_preview(video):
     #xbmc.log('TEST-----: '+str(video),xbmc.LOGNOTICE)
     titolo = video.find('div',class_='title_puntata').text.encode('utf-8').strip()
     data='[I] - ('+video.find('div',class_='scritta_ultima').text.encode('utf-8').strip()+')[/I]'
-    thumb='http:'+video.find('div',class_='holder-bg lozad').get('data-background-image')
+    thumb='https:'+video.find('div',class_='holder-bg lozad').get('data-background-image')
     plot=video.find('div',class_='occhiello').text.encode('utf-8').strip()
     link=url_base+video.find('a').get('href')
     liStyle = xbmcgui.ListItem(titolo+data)
@@ -639,7 +643,7 @@ def get_rows_video_landpage(video):
         titolo=div.find('div',class_='title').text.encode('utf-8').strip()
         #xbmc.log('TITOLO-----: '+str(titolo),xbmc.LOGNOTICE)
         data='[I] - ('+div.find('div',class_='data').text.encode('utf-8').strip()+')[/I]'
-        thumb='http:'+div.find('div',class_='bg-img lozad').get('data-background-image')
+        thumb='https:'+div.find('div',class_='bg-img lozad').get('data-background-image')
         plot=""
         link=url_base+div.a.get('href').strip()
         liStyle = xbmcgui.ListItem(titolo+data)

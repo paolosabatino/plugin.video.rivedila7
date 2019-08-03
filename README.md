@@ -3,6 +3,9 @@ Live Streaming La7, News and Weather, Replay the last week, Programs on-demand (
 
 
 ### Changelog
+3.1.0 (2019-08-03)
+- update due to La7's transfer of all video content to new servers
+
 3.0.0 (2019-07-30)
 - restored all the functions due to restyling of the La7 site
 - added new section Teche La7-The Protagonists
