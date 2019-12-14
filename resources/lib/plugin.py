@@ -6,12 +6,13 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 import xbmcaddon
-import urllib
-import urllib2
-import urlparse
 import html5lib
 from bs4 import BeautifulSoup
 
+from urllib.request import Request
+from urllib.request import urlopen
+from urllib.parse import urlencode
+from urllib.parse import parse_qsl
 
 
 addon = xbmcaddon.Addon()
@@ -42,7 +43,7 @@ fanart_path = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'fanart.jpg')
 
 
 def parameters_string_to_dict(parameters):
-    paramDict = dict(urlparse.parse_qsl(parameters[1:]))
+    paramDict = dict(parse_qsl(parameters[1:]))
     return paramDict
 
 
@@ -75,7 +76,7 @@ def addDirectoryItem_nodup(parameters, li, title=titolo_global, folder=True):
     if title in list_programmi:
         xbmc.log('DUPLICATE TV SHOW',xbmc.LOGNOTICE)
     else:
-        url = sys.argv[0] + '?' + urllib.urlencode(parameters, 'utf-8')
+        url = "%s?%s" % (sys.argv[0], urlencode(parameters, True, encoding='utf-8'))
         #xbmc.log('LIST------: '+str(url),xbmc.LOGNOTICE)
         if not folder:
             li.setInfo('video', {})
@@ -90,9 +91,9 @@ def play_video(video,live):
     regex3 = 'm3u8: "(.*?)"'
     regex4 = '  <iframe src="(.*?)"'
 
-    req = urllib2.Request(video,headers=headers)
-    page=urllib2.urlopen(req)
-    html=page.read()
+    req = Request(video,headers=headers)
+    page=urlopen(req)
+    html=page.read().decode('utf-8')
     if live:
         if re.findall(regex1, html):
             #xbmc.log('REGEX1-----: '+str(re.findall(regex1, html)),xbmc.LOGNOTICE)
@@ -108,8 +109,8 @@ def play_video(video,live):
         elif re.findall(regex4, html):
             #xbmc.log('REGEX4-----: '+str(re.findall(regex4, html)),xbmc.LOGNOTICE)
             iframe = re.findall(regex4, html)[0]
-            req2 = urllib2.Request(iframe,headers=headers)
-            page2=urllib2.urlopen(req2)
+            req2 = Request(iframe,headers=headers)
+            page2=urlopen(req2)
             html2=page2.read()
             if re.findall(regex2, html2):
                 #xbmc.log('REGEX2-B---: '+str(re.findall(regex2, html)),xbmc.LOGNOTICE)
@@ -132,8 +133,8 @@ def play_video(video,live):
 
 
 def rivedi(url, thumb):
-    req = urllib2.Request(url,headers=headers) 
-    page=urllib2.urlopen(req)
+    req = Request(url,headers=headers) 
+    page=urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     giorno=html.find('div',class_='block block-system').find_all('div',class_=['item item--menu-guida-tv ','item item--menu-guida-tv active '])
     #xbmc.log('GIORNO----------: '+str(giorno),xbmc.LOGNOTICE)
@@ -143,15 +144,15 @@ def rivedi(url, thumb):
             dateMonth=div.find('div',class_='giorno-mese').text.encode('utf-8').strip()
             dateRowWeek=div.find('div',class_='giorno-text').text.encode('utf-8').strip()
             a=div.a.get('href').strip()
-            liStyle = xbmcgui.ListItem(dateRowWeek+" "+dateDay+" "+dateMonth)
+            liStyle = xbmcgui.ListItem("%s %s %s" % (dateRowWeek.decode('utf-8'), dateDay.decode('utf-8'), dateMonth.decode('utf-8')))
             liStyle.setArt({ 'thumb': os.path.join(thumb_path, thumb), 'fanart' : fanart_path })
             addDirectoryItem_nodup({"mode": mode,"giorno": a}, liStyle)
         xbmcplugin.endOfDirectory(handle=handle, succeeded=True)    
 
 
 def rivedi_giorno():
-    req = urllib2.Request(url_base+giorno,headers=headers) 
-    page=urllib2.urlopen(req)
+    req = Request(url_base+giorno,headers=headers) 
+    page=urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     guida_tv=html.find(id="content_guida_tv_rivedi").find_all('div',class_='item item--guida-tv')
     if guida_tv:
@@ -163,11 +164,11 @@ def rivedi_giorno():
             if div.a:
                 urll = div.a.get('href').strip()
                 #xbmc.log('------LINK------: '+str(urll),xbmc.LOGNOTICE)
-                liStyle = xbmcgui.ListItem(orario+" "+nome)
+                liStyle = xbmcgui.ListItem("%s %s" % (orario.decode('utf-8'), nome.decode('utf-8')))
                 liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
                 liStyle.setInfo('video', { 'plot': plot })
                 liStyle.setProperty('isPlayable', 'true')
-                url2 = sys.argv[0] + '?' + urllib.urlencode({"mode": mode,"play": urll,"titolo": nome,"thumb":thumb,"plot":plot})
+                url2 = "%s?%s" % (sys.argv[0], urlencode({"mode": mode,"play": urll,"titolo": nome,"thumb":thumb,"plot":plot}))
                 xbmcplugin.addDirectoryItem(handle=handle, url=url2, listitem=liStyle, isFolder=False)
 
     xbmcplugin.setContent(handle, 'episodes')
@@ -175,17 +176,17 @@ def rivedi_giorno():
 
 
 def programmi_lettera():
-    req_p = urllib2.Request(url_programmi,headers=headers) 
-    page_p=urllib2.urlopen(req_p)
+    req_p = Request(url_programmi,headers=headers) 
+    page_p=urlopen(req_p)
     html_p=BeautifulSoup(page_p,'html5lib') 
     programmi=html_p.find(id='container-programmi-list').find_all('div',class_='list-item')
     #xbmc.log('PROGRAMMI----------: '+str(programmi),xbmc.LOGNOTICE)
-    req_pd = urllib2.Request(url_programmila7d,headers=headers) 
-    page_pd=urllib2.urlopen(req_pd)
+    req_pd = Request(url_programmila7d,headers=headers) 
+    page_pd=urlopen(req_pd)
     html_pd=BeautifulSoup(page_pd,'html5lib') 
     programmila7d=html_pd.find(id='container-programmi-list').find_all('div',class_='list-item')
-    req_tp = urllib2.Request(url_tutti_programmi,headers=headers) 
-    page_tp=urllib2.urlopen(req_tp)
+    req_tp = Request(url_tutti_programmi,headers=headers) 
+    page_tp=urlopen(req_tp)
     html_tp=BeautifulSoup(page_tp,'html5lib') 
     tutti_programmi=html_tp.find_all('div',class_='list-item')
 
@@ -194,7 +195,7 @@ def programmi_lettera():
             if dati.find('div',class_='titolo'):
                 titolo=dati.find('div',class_='titolo').text.encode('utf-8').strip()
                 #xbmc.log('TITLE1-----: '+str(titolo),xbmc.LOGNOTICE)
-                liStyle = xbmcgui.ListItem(titolo)
+                liStyle = xbmcgui.ListItem(titolo.decode('utf-8'))
                 url_trovato=dati.a.get('href').strip()
                 if url_trovato !='/meteola7' and url_trovato !='/tgla7':
                     if url_trovato == '/facciaafaccia':
@@ -221,7 +222,7 @@ def programmi_lettera():
             if dati.find('div',class_='titolo'):
                 titolo=dati.find('div',class_='titolo').text.encode('utf-8').strip()
                 #xbmc.log('TITLE1-----: '+str(titolo),xbmc.LOGNOTICE)
-                liStyle = xbmcgui.ListItem(titolo)
+                liStyle = xbmcgui.ListItem(titolo.decode('utf-8'))
                 url_trovato=dati.a.get('href').strip()
                 if url_trovato !='/meteola7' and url_trovato !='/tgla7':
                     if url_trovato == '/facciaafaccia':
@@ -249,7 +250,7 @@ def programmi_lettera():
             if dati.find('div',class_='titolo'):
                 titolo=dati.find('div',class_='titolo').text.encode('utf-8').strip()
                 #xbmc.log('TITLE2: '+str(titolo),xbmc.LOGNOTICE)
-                liStyle = xbmcgui.ListItem(titolo)
+                liStyle = xbmcgui.ListItem(titolo.decode('utf-8'))
                 url_trovato=dati.a.get('href').strip()
                 if url_trovato !='/meteola7' and url_trovato !='/tgla7':
                     if url_trovato == '/facciaafaccia':
@@ -299,8 +300,8 @@ def programmi_lettera():
 
 
 def programmi_lettera_teche_la7():
-    req_teche = urllib2.Request(url_teche_la7,headers=headers) 
-    page_teche=urllib2.urlopen(req_teche)
+    req_teche = Request(url_teche_la7,headers=headers) 
+    page_teche=urlopen(req_teche)
     html_teche=BeautifulSoup(page_teche,'html5lib') 
     teche_la7=html_teche.find_all('div',class_='list-item')
 
@@ -310,7 +311,7 @@ def programmi_lettera_teche_la7():
                 nomicognomi = dati.find('div',class_='titolo').text.encode('utf-8').strip()
                 cognominomi = " ".join( reversed(nomicognomi.split(" ")))
                 #xbmc.log('NOMI-----: '+str(cognominomi),xbmc.LOGNOTICE)
-                liStyle = xbmcgui.ListItem(cognominomi)
+                liStyle = xbmcgui.ListItem(cognominomi.decode('utf-8'))
                 url_trovato=dati.a.get('href').strip()
                 link=url_base+url_trovato
                 #xbmc.log('LINK-----: '+str(link),xbmc.LOGNOTICE)
@@ -392,9 +393,9 @@ def video_programma():
         link_global = url_base+'/omnibus'
     
     if link_global != url_tgla7d:
-        req = urllib2.Request(link_global+"/rivedila7",headers=headers)
+        req = Request(link_global+"/rivedila7",headers=headers)
         try:
-            page=urllib2.urlopen(req)
+            page=urlopen(req)
         except Exception as e:
             e = sys.exc_info()[0]
             xbmc.log('EXCEP URL: '+str(e),xbmc.LOGNOTICE)
@@ -439,10 +440,10 @@ def video_programma():
         # CULT VIDEO
         if html.findAll(text="Puntate Cult"):
             if link_global == url_base+'/chi-sceglie-la-seconda-casa':
-                req2 = urllib2.Request(link_global+"/rivedila7",headers=headers)
+                req2 = Request(link_global+"/rivedila7",headers=headers)
             else:
-                req2 = urllib2.Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
-            page2 = urllib2.urlopen(req2)
+                req2 = Request(link_global+"/rivedila7/archivio?page="+str(pagenum),headers=headers)
+            page2 = urlopen(req2)
             html2 = BeautifulSoup(page2,'html5lib')
             video_archivio = html2.find('div',class_='view-content clearfix').find_all('div',class_='views-row')
             if video_archivio:
@@ -453,8 +454,8 @@ def video_programma():
                     pagenext(page)
     #Tg La7d
     else:
-        req = urllib2.Request(link_global+"?page="+str(pagenum),headers=headers)
-        page = urllib2.urlopen(req)
+        req = Request(link_global+"?page="+str(pagenum),headers=headers)
+        page = urlopen(req)
         html=BeautifulSoup(page,'html5lib')
         video_tgla7d = html.find('div',class_='tgla7-category').find_all('article',class_='tgla7-new clearfix')
         if video_tgla7d:
@@ -470,8 +471,8 @@ def video_programma_teche_la7():
     global link_global
 
     #xbmc.log('LINK------: '+str(link_global),xbmc.LOGNOTICE)
-    req = urllib2.Request(link_global+"?page="+str(pagenum),headers=headers)
-    page = urllib2.urlopen(req)
+    req = Request(link_global+"?page="+str(pagenum),headers=headers)
+    page = urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     
     if pagenum == 0:
@@ -556,7 +557,7 @@ def get_rows_video_tgla7d(video):
             xbmc.log('EXCEP PLOT_TGLA7d: '+str(e),xbmc.LOGNOTICE)
             plot=""
         link=div.find('div',class_='tgla7-condividi').get('data-share')
-        liStyle = xbmcgui.ListItem(titolo)
+        liStyle = xbmcgui.ListItem(titolo.decode('utf-8'))
         liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
         liStyle.setInfo('video', { 'plot': plot })
         addDirectoryItem_nodup({"mode": mode,"play": link,"titolo": titolo,"thumb":thumb,"plot":plot}, liStyle, folder=False)              
@@ -577,9 +578,9 @@ def get_rows_video_techela7_preview(video):
         thumb=''
     plot=video.find('div',class_='description').text.encode('utf-8').strip()
     link=url_base+video.find('a',class_='title').get('href')
-    liStyle = xbmcgui.ListItem(titolo+data)
+    liStyle = xbmcgui.ListItem("%s%s" % (titolo.decode('utf-8'),data.decode('utf-8')))
     liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
-    liStyle.setInfo('video', { 'plot': plot })
+    liStyle.setInfo('video', { 'plot': plot.decode('utf-8') })
     addDirectoryItem_nodup({"mode": mode,"play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle, folder=False)
 
 
@@ -591,9 +592,9 @@ def get_rows_video_techela7(video):
         thumb='https:'+div.find('div',class_='bg-img lozad').get('data-background-image')
         plot=""
         link=url_base+div.a.get('href').strip()
-        liStyle = xbmcgui.ListItem(titolo+data)
+        liStyle = xbmcgui.ListItem("%s%s" % (titolo.decode('utf-8'),data.decode('utf-8')))
         liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
-        liStyle.setInfo('video', { 'plot': plot })
+        liStyle.setInfo('video', { 'plot': plot.decode('utf-8') })
         addDirectoryItem_nodup({"mode": mode,"play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle, folder=False)
 
 
@@ -601,8 +602,8 @@ def video_programma_landpage():
     global link_global
     
     #xbmc.log('LINK GLOBAL------: '+str(link_global),xbmc.LOGNOTICE)
-    req = urllib2.Request(link_global,headers=headers)
-    page = urllib2.urlopen(req)
+    req = Request(link_global,headers=headers)
+    page = urlopen(req)
     html=BeautifulSoup(page,'html5lib')
     
     # FIRT VIDEO
@@ -632,9 +633,9 @@ def get_rows_video_landpage_preview(video):
     thumb='https:'+video.find('div',class_='holder-bg lozad').get('data-background-image')
     plot=video.find('div',class_='occhiello').text.encode('utf-8').strip()
     link=url_base+video.find('a').get('href')
-    liStyle = xbmcgui.ListItem(titolo+data)
+    liStyle = xbmcgui.ListItem("%s%s" % (titolo.decode('utf-8'), data.decode('utf-8')))
     liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
-    liStyle.setInfo('video', { 'plot': plot })
+    liStyle.setInfo('video', { 'plot': plot.decode('utf-8') })
     addDirectoryItem_nodup({"mode": mode,"play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle, folder=False)
 
 
@@ -646,9 +647,9 @@ def get_rows_video_landpage(video):
         thumb='https:'+div.find('div',class_='bg-img lozad').get('data-background-image')
         plot=""
         link=url_base+div.a.get('href').strip()
-        liStyle = xbmcgui.ListItem(titolo+data)
+        liStyle = xbmcgui.ListItem("%s%s" % (titolo.decode('utf-8'), data.decode('utf-8')))
         liStyle.setArt({ 'thumb': thumb, 'fanart' : fanart_path })
-        liStyle.setInfo('video', { 'plot': plot })
+        liStyle.setInfo('video', { 'plot': plot.decode('utf-8') })
         addDirectoryItem_nodup({"mode": mode,"play": link,"titolo": titolo+data,"thumb":thumb,"plot":plot}, liStyle, folder=False)
 
 
